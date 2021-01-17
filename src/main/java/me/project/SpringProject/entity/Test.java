@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -37,7 +38,10 @@ public class Test {
     @Column
     private Difficulties difficulty;
 
-    @ManyToMany(mappedBy = "requiredTests")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_required_tests",
+            joinColumns = @JoinColumn(name = "test_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users;
 
     @Basic
