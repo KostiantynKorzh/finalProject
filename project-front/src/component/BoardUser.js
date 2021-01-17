@@ -3,13 +3,17 @@ import React, {useState, useEffect} from "react";
 import UserService from "../services/user.service";
 import message from "../redux/reducers/message";
 import {useSelector} from "react-redux";
+import axios from "axios";
+import authHeader from "../services/auth-header";
 
 const BoardUser = () => {
-    const [content, setContent] = useState("");
+    const [content, setContent] = useState([]);
+
 
     useEffect(() => {
-        UserService.getUserContent().then(
+        UserService.getUserContent(3).then(
             (response) => {
+                console.log(response.data);
                 setContent(response.data);
             },
             (error) => {
@@ -20,16 +24,19 @@ const BoardUser = () => {
                     error.message ||
                     error.toString();
 
-                setContent(_content);
+                // setContent(_content);
             }
         );
+
     }, []);
 
 
     return (
         <div className="container">
             <header className="jumbotron">
-                <h3>{content}</h3>
+                <h3>{content.map(test =>
+                    <div>{test.title}</div>
+                )}</h3>
             </header>
         </div>
     );

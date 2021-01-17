@@ -26,7 +26,8 @@ public class AdminController {
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUsersByRoles() {
-        List<User> users = userRepository.findAllByRoles(roleRepository.findByName(RoleType.ROLE_USER).get());
+        List<User> users = userRepository.findAllByRoles(
+                roleRepository.findByName(RoleType.ROLE_USER).get());
 //        List<User> users = userRepository.findAll();
         return ResponseEntity.ok(users);
     }

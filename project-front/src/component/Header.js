@@ -56,8 +56,8 @@ const Header = () => {
                 <Nav.Link href="/admin">Admin</Nav.Link>}
                 {currentUser &&
                 <Nav.Link href="/user">User</Nav.Link>}
-                {/*{currentUser && <Nav.Link href="/profile">Profile</Nav.Link>}*/}
-                {/*{currentUser && <Nav.Link href="/home" onClick={logOut}>Logout</Nav.Link>}*/}
+                {currentUser && <Nav.Link href="/profile">Profile</Nav.Link>}
+                {currentUser && <Nav.Link href="/home" onClick={logOut}>Logout</Nav.Link>}
                 {!currentUser && <Nav.Link onClick={login} href="/login">Login</Nav.Link>}
             </Navbar.Collapse>
         </Navbar>
