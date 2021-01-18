@@ -4,18 +4,24 @@ import UserService from "../services/user.service";
 import {useDispatch, useSelector} from "react-redux";
 import {getAllUsers} from "../redux/actions/admin";
 import AdminService from "../services/admin.service";
-import {Modal, Button, Table, Form} from "react-bootstrap";
+import {ToggleButtonGroup, Dropdown, Modal, Button, Table, Form, InputGroup} from "react-bootstrap";
 import Header from "./Header";
 import validator from "validator";
 import {register} from "../redux/actions/auth";
+import axios from "axios";
+import {ToggleButton} from "react-bootstrap";
 
 const BoardAdmin = () => {
     const [content, setContent] = useState("");
 
     const [modal, setModal] = useState(false);
+    const [testsModalShow, setTestsModalShow] = useState(false);
+
+    const [testsToAdd, setTestsToAdd] = useState([]);
+    const [userToAddTests, setUserToAddTests] = useState(0);
 
     const [users, setUsers] = useState([]);
-    const [userToEdit, setUserToEdit] = useState({user: null});
+    const [userToEdit, setUserToEdit] = useState(null);
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -24,7 +30,12 @@ const BoardAdmin = () => {
     const [firstNameError, setFirstNameError] = useState("");
     const [lastNameError, setLastFirstNameError] = useState("");
 
+    const [tests, setTests] = useState([]);
+
     const dispatch = useDispatch();
+
+    let firstNameTemp;
+    let lastNameTemp;
 
     useEffect(() => {
         UserService.getAdminContent().then(
@@ -58,12 +69,39 @@ const BoardAdmin = () => {
         // AdminService.deleteUser(id).then(r => fetchUsers());
     }
 
-    const handleEdit = ({user}) => {
-        console.log("edit", user.id);
-        // console.log("user", user.id);
-        // setUserToEdit({user: user});
-        console.log(setUserToEdit);
+    const handleEdit = (user) => {
+        // console.log(user.firstName);
+        setFirstName(user.firstName);
+        setLastName(user.lastName);
+        console.log(firstName);
+        console.log(lastName);
+        firstNameTemp = firstName;
+        lastNameTemp = lastName;
+        setUserToEdit(user);
+        console.log("refresh");
         setModal(true);
+    }
+
+    const handleAddTests = (e, id) => {
+        AdminService.getNonRequiredTests(id).then(
+            (response) => {
+                console.log(response.data);
+                setTests(response.data);
+            },
+            (error) => {
+                const _content =
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+
+                // setContent(_content);
+            }
+        );
+        // tests.map(test => console.log(test));
+        setUserToAddTests(id);
+        setTestsModalShow(true);
     }
 
     const TableColumns = () => {
@@ -74,8 +112,24 @@ const BoardAdmin = () => {
                 <td>{user.firstName}</td>
                 <td>{user.lastName}</td>
                 <td>{user.email}</td>
-                <td><Button onClick={() => handleEdit({user})}>Edit</Button></td>
-                <td><Button onClick={() => handleDelete(user.id)}>Delete</Button></td>
+                {/*<td><Button onClick={() => handleEdit({user})}>Edit</Button></td>*/}
+                {/*<td><Button onClick={() => handleDelete(user.id)}>Delete</Button></td>*/}
+                <td>
+                    <Dropdown>
+                        <Dropdown.Toggle>
+                            More
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={(e) => handleAddTests(e, user.id)}>Add tests</Dropdown.Item>
+                            {/*<Dropdown.Item onClick={() => handleEdit({*/}
+                            {/*    firstName: user.firstName,*/}
+                            {/*    lastName: user.lastName*/}
+                            {/*})}>Edit</Dropdown.Item>*/}
+                            <Dropdown.Item onClick={() => handleEdit(user)}>Edit</Dropdown.Item>
+                            <Dropdown.Item>Delete</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </td>
             </tr>
             </tbody>));
 
@@ -86,16 +140,24 @@ const BoardAdmin = () => {
 
 
     const onChangeFirstName = (e) => {
-        // e.preventDefault()
-        const firstName = e.target.value;
-        // setFirstName(firstName);
-        console.log("first = ", firstName);
+        e.preventDefault();
+        // const firstNameTemp = e.target.value;
+
+        firstNameTemp = e.target.value;
+        // console.log("change: " + firstNameTemp);
+
+
+        // setFirstName(firstNameTemp)
+        // console.log("first = ", firstName);
     };
 
     const onChangeLastName = (e) => {
-        const lastName = e.target.value;
-        // setLastName(lastName);
-        console.log("last = ", lastName);
+        // e.preventDefault();
+        // const lastNameTemp = e.target.value;
+        lastNameTemp = e.target.value;
+        // setLastName(lastNameTemp);
+        // console.log("lastTemp = ", lastNameTemp);
+        // console.log("last = ", lastName);
     };
 
 
@@ -118,17 +180,82 @@ const BoardAdmin = () => {
 
 
     const handleEditModal = (e) => {
-        // e.preventDefault();
+        e.preventDefault();
 
         // if (validate(firstName, lastName)) {
 
-        console.log(e);
-        console.log("Successful editing", firstName, lastName);
+        console.log("temp = ", firstNameTemp, lastNameTemp);
+        setFirstName(firstNameTemp);
+        setLastName(lastNameTemp);
+        console.log("after = ", firstName, lastName);
+
+        // console.log(e);
+        // console.log("Successful editing", firstName, lastName);
+        console.log("Successful editing", firstNameTemp, firstNameTemp);
+
+        userToEdit.firstName = firstNameTemp;
+        userToEdit.lastName = lastNameTemp;
+
+        AdminService.updateUser(userToEdit.id, userToEdit);
+
         // }
         // window.alert(message);
     };
 
-    const ShowModal = ({user}) => {
+    const handleAddTestsSubmit = () => {
+        AdminService.addTestsToUser(userToAddTests, tests);
+    }
+
+    const handleAddOneTest = (id) => {
+        // setTests((old) => [...old, id]);
+        AdminService.addOneTestToUser(userToAddTests, id);
+        setSuccessful(true);
+    }
+
+    const TestsModal = () => {
+        return (
+            <Modal show={testsModalShow}
+                   onHide={() => setTestsModalShow(false)}
+            >
+                <Modal.Header>Add tests</Modal.Header>
+                <Modal.Body>
+                    <Table>
+                        <tbody>
+                        {tests.map(test => (
+                                <tr>
+                                    <td>{test.title}</td>
+                                    <td>{test.subject}</td>
+                                    <td>{test.difficulty}</td>
+                                    <td>{test.created}</td>
+                                    <td>
+                                        {/*<InputGroup className="mb-3">*/}
+                                        {/*    <InputGroup.Prepend >*/}
+                                        {/*        <InputGroup.Checkbox  aria-label="ADD" />*/}
+                                        {/*    </InputGroup.Prepend>*/}
+                                        {/*</InputGroup>*/}
+                                        {/*<ToggleButtonGroup type="checkbox"*/}
+                                        {/*    // value={value}*/}
+                                        {/*    //                onChange={handleChange}*/}
+                                        {/*>*/}
+                                        {/*    <ToggleButton value={test.id}>Add</ToggleButton>*/}
+                                        {/*</ToggleButtonGroup>*/}
+                                        <Button type="submit" onClick={() => handleAddOneTest(test.id)}>ADD</Button>
+                                    </td>
+                                </tr>
+                            )
+                        )}
+                        {/*<tr><td>test</td></tr>*/}
+                        {/*{tests[0]}*/}
+                        </tbody>
+                        <Button onClick={() => handleAddTestsSubmit}>Submit</Button>
+                    </Table>
+                </Modal.Body>
+            </Modal>
+        )
+    }
+
+    const ShowModal = () => {
+
         return (
             <Modal show={modal}
                    onHide={() => setModal(false)}
@@ -140,7 +267,7 @@ const BoardAdmin = () => {
                             <Form.Label>First Name</Form.Label>
                             <Form.Control type="text" name="firstName"
                                           onChange={(e) => onChangeFirstName(e)}
-                                // defailtValue="first name"
+                                          value={firstNameTemp}
                                           isInvalid={!!firstNameError}
                             />
                             {firstNameError && (
@@ -154,7 +281,7 @@ const BoardAdmin = () => {
                             <Form.Label>Last Name</Form.Label>
                             <Form.Control type="text" name="lastName"
                                           onChange={(e) => onChangeLastName(e)}
-                                          value={lastName}
+                                          value={lastNameTemp}
                                           isInvalid={!!lastNameError}
                             />
                             {lastNameError && (
@@ -195,7 +322,8 @@ const BoardAdmin = () => {
                 {/*    onClick={() => handleDelete(user.id)}*/}
                 {/*>{user.email}</Button></div>)}*/}
             </div>
-            <ShowModal user={userToEdit}/>
+            <ShowModal/>
+            <TestsModal/>
         </div>
     );
 };

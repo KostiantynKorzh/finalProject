@@ -1,1 +1,1 @@
-INSERT INTO tests(title) values("Third test");
+INSERT INTO user_required_tests(user_id, test_id) values(5,4);

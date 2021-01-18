@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
 @RestController
@@ -28,8 +29,9 @@ public class UserController {
     @GetMapping("/{id}/tests")
     public ResponseEntity<?> getAllRequiredTests(@PathVariable Long id) {
         User user = userRepository.findById(id).get();
-        List<Test> requiredTests = testRepository.findAllByUsers(user);
+        Set<Test> requiredTests = testRepository.findAllByUsers(user);
         return ResponseEntity.ok(requiredTests);
     }
+
 
 }
