@@ -46,12 +46,4 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-//    @ManyToMany(mappedBy = "users")
-//    private Set<Test> requiredTests;
-
-//    @OneToMany
-//    private List<Test> testsCreated;
-
-
-
 }

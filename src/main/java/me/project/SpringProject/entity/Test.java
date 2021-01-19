@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -26,9 +25,6 @@ public class Test {
     @Column
     private String title;
 
-//    @OneToMany(mappedBy = "question")
-//    private List<Question> answers;
-
     @Enumerated(EnumType.STRING)
     @Column
     private Subjects subject;
@@ -38,11 +34,17 @@ public class Test {
     @Column
     private Difficulties difficulty;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_required_tests",
-            joinColumns = @JoinColumn(name = "test_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> users;
+//    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+//    @JoinTable(name = "user_required_tests",
+//            joinColumns = @JoinColumn(name = "test_id"),
+//            inverseJoinColumns = @JoinColumn(name = "user_id"))
+//    private Set<User> usersRequired;
+//
+//    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+//    @JoinTable(name = "user_passed_tests",
+//            joinColumns = @JoinColumn(name = "test_id"),
+//            inverseJoinColumns = @JoinColumn(name = "user_id"))
+//    private Set<User> usersPassed;
 
     @Basic
     @Temporal(TemporalType.TIMESTAMP)

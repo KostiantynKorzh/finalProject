@@ -209,13 +209,21 @@ const BoardAdmin = () => {
     const handleAddOneTest = (id) => {
         // setTests((old) => [...old, id]);
         AdminService.addOneTestToUser(userToAddTests, id);
-        setSuccessful(true);
+        setTestsModalShow( false)
+        AdminService.getNonRequiredTests(id).then(
+            (response) => {
+                console.log(response.data);
+                setTests(response.data);
+            });
+        setTestsModalShow( true)
+        // setSuccessful(true);
     }
 
     const TestsModal = () => {
         return (
             <Modal show={testsModalShow}
-                   onHide={() => setTestsModalShow(false)}
+                   onHide={() => setTestsModalShow( false)}
+                   animation={false}
             >
                 <Modal.Header>Add tests</Modal.Header>
                 <Modal.Body>
@@ -259,6 +267,7 @@ const BoardAdmin = () => {
         return (
             <Modal show={modal}
                    onHide={() => setModal(false)}
+                   animation={false}
             >
                 <Modal.Header>Editing User</Modal.Header>
                 <Modal.Body>

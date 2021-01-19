@@ -55,7 +55,7 @@ const Header = () => {
                 {currentUser && currentUser.roles.includes("ROLE_ADMIN") &&
                 <Nav.Link href="/admin">Admin</Nav.Link>}
                 {currentUser &&
-                <Nav.Link href="/user">User</Nav.Link>}
+                <Nav.Link href={`/user/${currentUser.id}`}>User</Nav.Link>}
                 {currentUser && <Nav.Link href="/profile">Profile</Nav.Link>}
                 {currentUser && <Nav.Link href="/home" onClick={logOut}>Logout</Nav.Link>}
                 {!currentUser && <Nav.Link onClick={login} href="/login">Login</Nav.Link>}

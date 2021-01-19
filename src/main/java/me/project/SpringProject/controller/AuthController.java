@@ -61,12 +61,9 @@ public class AuthController {
 
 
         UserDetailsAuth userDetails = (UserDetailsAuth) authentication.getPrincipal();
-//        System.out.println("userDetails = " + userDetails);
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-
-//        System.out.println("roles = " + roles);
 
         System.out.println(userDetails.toString());
 

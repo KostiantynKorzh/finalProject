@@ -2,6 +2,7 @@ import axios from "axios";
 import authHeader from "./auth-header";
 
 const API_URL = "http://localhost:8090/api/admin/";
+const API_URL_USER = "http://localhost:8090/api/user/";
 
 const getAll = () => {
     return axios.get(API_URL + 'users', {headers: authHeader()});
@@ -23,7 +24,7 @@ const updateUser = (id, user) => {
 }
 
 const getNonRequiredTests = (id) => {
-    return axios.get(API_URL + 'users/addTests/' + id, {headers: authHeader()});
+    return axios.get(API_URL_USER + id+"/tests/available", {headers: authHeader()});
 }
 
 const addOneTestToUser = (id, testId) => {

@@ -9,6 +9,6 @@ import java.util.Set;
 
 public interface TestRepository extends JpaRepository<Test, Long> {
     Set<Test> findAllById(Long id);
-    Set<Test> findAllByUsers(User user);
-    Set<Test> findAllByUsersNot(User user);
+    List<Test> findAll();
+//    Set<Test> findAllByUsersRequired(User user);
 }

@@ -43,7 +43,7 @@ function App() {
                 <Route exact path="/login" component={Login}/>
                 <Route exact path="/signup" component={Signup}/>
                 <Route exact path="/profile" component={Profile}/>
-                <Route path="/user" component={BoardUser}/>
+                <Route path="/user/:id" component={BoardUser }/>
                 <Route path="/admin" component={BoardAdmin}/>
 
                 {/*<Route path="/user" component={BoardUser} />*/}

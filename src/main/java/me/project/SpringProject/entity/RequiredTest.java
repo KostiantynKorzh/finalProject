@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 @Data
 @Builder
@@ -14,8 +13,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 
 @Entity
-@Table(name = "results")
-public class Result {
+@Table(name = "requiredTests")
+public class RequiredTest {
 
     @Id
     @GeneratedValue
@@ -26,11 +25,5 @@ public class Result {
 
     @ManyToOne
     private Test test;
-
-    @Column(nullable = false)
-    private Double score;
-
-    @Column(nullable = false)
-    private Timestamp passTimestamp;
 
 }

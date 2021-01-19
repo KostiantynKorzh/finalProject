@@ -35,8 +35,8 @@ const Login = (props) => {
         // if (checkBtn.current.context._errors.length === 0) {
         dispatch(login(email, password))
             .then(() => {
-                // props.history.push("/home");
-                // window.location.reload();
+                props.history.push("/home");
+                window.location.reload();
             })
             .catch(() => {
                 setLoading(false);
@@ -46,9 +46,9 @@ const Login = (props) => {
         // }
     };
 
-    if (isLoggedIn) {
-        return <Redirect to="/home"/>
-    }
+    // if (isLoggedIn) {
+    //     return <Redirect to="/home"/>
+    // }
 
     return (
         <Container>

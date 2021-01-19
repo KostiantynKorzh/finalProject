@@ -1,12 +1,7 @@
 package me.project.SpringProject.controller;
 
-import me.project.SpringProject.entity.Role;
-import me.project.SpringProject.entity.RoleType;
-import me.project.SpringProject.entity.Test;
-import me.project.SpringProject.entity.User;
-import me.project.SpringProject.repository.RoleRepository;
-import me.project.SpringProject.repository.TestRepository;
-import me.project.SpringProject.repository.UserRepository;
+import me.project.SpringProject.entity.*;
+import me.project.SpringProject.repository.*;
 import me.project.SpringProject.request.AddTestRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +20,12 @@ public class AdminController {
     UserRepository userRepository;
 
     @Autowired
+    RequiredTestRepository requiredTestRepository;
+
+    @Autowired
+    ResultRepository resultRepository;
+
+    @Autowired
     RoleRepository roleRepository;
 
     @Autowired
@@ -35,7 +36,6 @@ public class AdminController {
     public ResponseEntity<?> getAllUsersByRoles() {
         List<User> users = userRepository.findAllByRoles(
                 roleRepository.findByName(RoleType.ROLE_USER).get());
-//        List<User> users = userRepository.findAll();
         return ResponseEntity.ok(users);
     }
 
@@ -43,7 +43,6 @@ public class AdminController {
     @DeleteMapping("/users/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-//        System.out.println("id = " + id);
         User user = userRepository.findById(id).get();
         System.out.println(user);
         userRepository.delete(user);
@@ -75,31 +74,26 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllRequiredTests(@PathVariable Long id) {
         User user = userRepository.findById(id).get();
-        List<Test> allTests = testRepository.findAll();
-        Set<Test> nonRequiredTests = testRepository.findAllByUsers(user);
-        allTests.removeAll(nonRequiredTests);
-//        System.out.println(requiredTests);
-        return ResponseEntity.ok(allTests);
+//        List<Test> allTests = testRepository.findAll();
+//        Set<Result> passedTests = resultRepository.findAllByUser(user);
+        Set<RequiredTest> requiredTests = requiredTestRepository.findAllByUser(user);
+//        allTests.removeAll(nonRequiredTests);
+//        allTests.removeAll(passedTests);
+//        return ResponseEntity.ok(allTests);
+        return ResponseEntity.ok(requiredTests);
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
     @PostMapping("/users/addTests/add/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addTestsToUser(@PathVariable Long id, @RequestBody AddTestRequest req) {
-//        System.out.println("req = " + testId);
         User user = userRepository.findById(id).get();
         Test test = testRepository.findById(req.getTestId()).get();
-        test.getUsers().add(user);
-        testRepository.save(test);
-//        List<Test> requiredTests = testRepository.findAll();
-//        List<Test> requiredTests = testRepository.findAll();
-//        for (int i = 0; i < requiredTests.size(); i++) {
-//            for (int j = 0; j < idsOfTests.length; j++) {
-//                if(requiredTests.get(i).getId().equals(idsOfTests[j])){
-//                    requiredTests.get(i).getUsers().add(user);
-//                }
-//            }
-//        }
+        RequiredTest requiredTest = RequiredTest.builder()
+                .test(test)
+                .user(user)
+                .build();
+        requiredTestRepository.save(requiredTest);
         return ResponseEntity.ok().build();
     }
 
