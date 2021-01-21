@@ -23,10 +23,15 @@ const passTest = (id, testId) => {
     return axios.post(API_URL + id + "/test", {testId}, {headers: authHeader()});
 }
 
+const getTest = (id, testId) => {
+    return axios.get(API_URL + id + '/takeTest/' + testId, {headers: authHeader()})
+}
+
 export default {
     getPublicContent,
     getRequiredTests,
     getPassedTests,
     getAdminContent,
-    passTest
+    passTest,
+    getTest
 }

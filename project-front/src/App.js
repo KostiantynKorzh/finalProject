@@ -5,13 +5,16 @@ import Home from "./component/Home";
 import {Router, Switch, Route, BrowserRouter} from "react-router-dom";
 import Login from "./component/Login";
 import Signup from "./component/Signup";
-import Profile from "./component/Register";
 import {useDispatch, useSelector} from "react-redux";
 import {clearMessage} from "./redux/actions/message";
 import BoardUser from "./component/BoardUser";
 import {history} from "./utils/history";
 import {logout} from "./redux/actions/auth";
 import BoardAdmin from "./component/BoardAdmin";
+import Test from "./component/Test";
+import CreateTestInit from "./component/CreateTestInit";
+import Profile from "./component/Profile";
+import CreateTest from "./component/CreateTest";
 
 function App() {
 
@@ -43,8 +46,12 @@ function App() {
                 <Route exact path="/login" component={Login}/>
                 <Route exact path="/signup" component={Signup}/>
                 <Route exact path="/profile" component={Profile}/>
-                <Route path="/user/:id" component={BoardUser }/>
-                <Route path="/admin" component={BoardAdmin}/>
+                <Route exact path="/user/:id/takeTest/:testId" component={Test}/>
+                <Route exct path="/user/:id" component={BoardUser}/>
+                <Route exact path="/admin" component={BoardAdmin}/>
+                <Route exact path="/admin/createTest" component={CreateTestInit}/>
+                <Route exact path="/admin/createTest/:id" component={CreateTest}/>
+                {/*<Route exact path="/admin/createTest" component={CreateTestModal}/>*/}
 
                 {/*<Route path="/user" component={BoardUser} />*/}
                 {/*<Route path="/admin" component={BoardAdmin} />*/}

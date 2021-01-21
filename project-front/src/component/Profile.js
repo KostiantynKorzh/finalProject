@@ -1,6 +1,7 @@
 import React from "react";
 import {Redirect} from 'react-router-dom';
 import {useSelector} from "react-redux";
+import Header from "./Header";
 
 const Profile = () => {
     const {user: currentUser} = useSelector((state) => state.auth);
@@ -10,6 +11,8 @@ const Profile = () => {
     }
 
     return (
+        <div>
+        <Header/>
         <div className="container">
             <header className="jumbotron">
 
@@ -32,6 +35,7 @@ const Profile = () => {
                 {currentUser.roles &&
                 currentUser.roles.map((role, index) => <li key={index}>{role}</li>)}
             </ul>
+        </div>
         </div>
     );
 };

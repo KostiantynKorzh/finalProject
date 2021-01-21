@@ -10,12 +10,16 @@ import validator from "validator";
 import {register} from "../redux/actions/auth";
 import axios from "axios";
 import {ToggleButton} from "react-bootstrap";
+import AddTestsToUsersModal from "./modal/AddTestsToUsersModal";
+import CreateTestModal from "./modal/CreateTestModal";
 
 const BoardAdmin = () => {
     const [content, setContent] = useState("");
 
     const [modal, setModal] = useState(false);
-    const [testsModalShow, setTestsModalShow] = useState(false);
+    const [addTestsToUsersModalShow, setAddTestsToUsersModalShow] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [createTestShow, setCreateTestShow] = useState(false);
 
     const [testsToAdd, setTestsToAdd] = useState([]);
     const [userToAddTests, setUserToAddTests] = useState(0);
@@ -85,7 +89,6 @@ const BoardAdmin = () => {
     const handleAddTests = (e, id) => {
         AdminService.getNonRequiredTests(id).then(
             (response) => {
-                console.log(response.data);
                 setTests(response.data);
             },
             (error) => {
@@ -101,41 +104,32 @@ const BoardAdmin = () => {
         );
         // tests.map(test => console.log(test));
         setUserToAddTests(id);
-        setTestsModalShow(true);
+        setAddTestsToUsersModalShow(true);
     }
 
     const TableColumns = () => {
-        return (users.map(user =>
-            <tbody key={user.id}>
-            <tr>
-                <td>{user.id}</td>
-                <td>{user.firstName}</td>
-                <td>{user.lastName}</td>
-                <td>{user.email}</td>
-                {/*<td><Button onClick={() => handleEdit({user})}>Edit</Button></td>*/}
-                {/*<td><Button onClick={() => handleDelete(user.id)}>Delete</Button></td>*/}
-                <td>
-                    <Dropdown>
-                        <Dropdown.Toggle>
-                            More
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item onClick={(e) => handleAddTests(e, user.id)}>Add tests</Dropdown.Item>
-                            {/*<Dropdown.Item onClick={() => handleEdit({*/}
-                            {/*    firstName: user.firstName,*/}
-                            {/*    lastName: user.lastName*/}
-                            {/*})}>Edit</Dropdown.Item>*/}
-                            <Dropdown.Item onClick={() => handleEdit(user)}>Edit</Dropdown.Item>
-                            <Dropdown.Item>Delete</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </td>
-            </tr>
-            </tbody>));
-
-        //     <div key={user.email}><Button
-        //     // onClick={() => handleDelete(user.id)}
-        // >{user.email}</Button></div>)
+        return (
+            users.map(user =>
+                <tbody key={user.id}>
+                <tr>
+                    <td>{user.id}</td>
+                    <td>{user.firstName}</td>
+                    <td>{user.lastName}</td>
+                    <td>{user.email}</td>
+                    <td>
+                        <Dropdown>
+                            <Dropdown.Toggle>
+                                More
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={(e) => handleAddTests(e, user.id)}>Add tests</Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleEdit(user)}>Edit</Dropdown.Item>
+                                <Dropdown.Item>Delete</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </td>
+                </tr>
+                </tbody>));
     }
 
 
@@ -206,64 +200,41 @@ const BoardAdmin = () => {
         AdminService.addTestsToUser(userToAddTests, tests);
     }
 
-    const handleAddOneTest = (id) => {
-        // setTests((old) => [...old, id]);
-        AdminService.addOneTestToUser(userToAddTests, id);
-        setTestsModalShow( false)
-        AdminService.getNonRequiredTests(id).then(
-            (response) => {
-                console.log(response.data);
-                setTests(response.data);
-            });
-        setTestsModalShow( true)
-        // setSuccessful(true);
-    }
-
-    const TestsModal = () => {
-        return (
-            <Modal show={testsModalShow}
-                   onHide={() => setTestsModalShow( false)}
-                   animation={false}
-            >
-                <Modal.Header>Add tests</Modal.Header>
-                <Modal.Body>
-                    <Table>
-                        <tbody>
-                        {tests.map(test => (
-                                <tr>
-                                    <td>{test.title}</td>
-                                    <td>{test.subject}</td>
-                                    <td>{test.difficulty}</td>
-                                    <td>{test.created}</td>
-                                    <td>
-                                        {/*<InputGroup className="mb-3">*/}
-                                        {/*    <InputGroup.Prepend >*/}
-                                        {/*        <InputGroup.Checkbox  aria-label="ADD" />*/}
-                                        {/*    </InputGroup.Prepend>*/}
-                                        {/*</InputGroup>*/}
-                                        {/*<ToggleButtonGroup type="checkbox"*/}
-                                        {/*    // value={value}*/}
-                                        {/*    //                onChange={handleChange}*/}
-                                        {/*>*/}
-                                        {/*    <ToggleButton value={test.id}>Add</ToggleButton>*/}
-                                        {/*</ToggleButtonGroup>*/}
-                                        <Button type="submit" onClick={() => handleAddOneTest(test.id)}>ADD</Button>
-                                    </td>
-                                </tr>
-                            )
-                        )}
-                        {/*<tr><td>test</td></tr>*/}
-                        {/*{tests[0]}*/}
-                        </tbody>
-                        <Button onClick={() => handleAddTestsSubmit}>Submit</Button>
-                    </Table>
-                </Modal.Body>
-            </Modal>
-        )
-    }
+    // const Mod = () => {
+    //     return (
+    //         // <CreateTestModal/>
+    //         <Modal
+    //             // onShow={props.showModal}
+    //             onShow={showModal}
+    //             onHide={() => setShowModal(false)}
+    //             animation={false}
+    //         >
+    //             <Modal.Header>Creating test</Modal.Header>
+    //             <Modal.Body>
+    //                 {/*<Form>*/}
+    //                 {/*    <Form.Group controlId="formTestTitle">*/}
+    //                 {/*        <Form.Label>Test Title</Form.Label>*/}
+    //                 {/*        <Form.Control type="text" name="testTitle"*/}
+    //                 {/*        />*/}
+    //                 {/*    </Form.Group>*/}
+    //
+    //                 {/*    <Form.Group controlId="formSubject">*/}
+    //                 {/*        <Form.Label>Last Name</Form.Label>*/}
+    //                 {/*        <Form.Control as="select" name="subject"*/}
+    //                 {/*        >*/}
+    //                 {/*            <option>First</option>*/}
+    //                 {/*            <option>Second</option>*/}
+    //                 {/*            <option>Third</option>*/}
+    //                 {/*        </Form.Control>*/}
+    //                 {/*    </Form.Group>*/}
+    //                 {/*</Form>*/}
+    //                 <h2>Hi</h2>
+    //             </Modal.Body>
+    //         </Modal>
+    //     );
+    // }
 
     const ShowModal = () => {
-
         return (
             <Modal show={modal}
                    onHide={() => setModal(false)}
@@ -310,10 +281,15 @@ const BoardAdmin = () => {
         );
     }
 
+    const handleShowModal = () => {
+        setShowModal(true);
+    }
+
     return (
         <div>
             <Header/>
             <div className="container">
+                <Button href="/admin/createTest">Create test</Button>
                 <h3>{content}</h3>
                 <Table striped bordered>
                     <thead>
@@ -326,13 +302,20 @@ const BoardAdmin = () => {
                     </thead>
                     <TableColumns/>
                 </Table>
-                {/*<Button onClick={() => handleDelete(6)}>delete 6</Button>*/}
-                {/*{users.map(user => <div key={user.email}><Button*/}
-                {/*    onClick={() => handleDelete(user.id)}*/}
-                {/*>{user.email}</Button></div>)}*/}
             </div>
+            <Button onClick={() => handleShowModal()}>Here</Button>
             <ShowModal/>
-            <TestsModal/>
+            {/*<TestsModal/>*/}
+            <AddTestsToUsersModal props={{
+                tests: tests,
+                testsModalShow: addTestsToUsersModalShow,
+                setTestsModalShow: setAddTestsToUsersModalShow,
+                userToAddTests: userToAddTests
+            }}/>
+            <CreateTestModal props={{
+                createTestShow: showModal,
+                setCreateTestShow: setShowModal
+            }}/>
         </div>
     );
 };

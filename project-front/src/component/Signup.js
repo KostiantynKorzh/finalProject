@@ -84,7 +84,7 @@ const Signup = () => {
                     setSuccessful(false);
                 });
         }
-        window.alert(message);
+        // window.alert(message);
     };
 
 

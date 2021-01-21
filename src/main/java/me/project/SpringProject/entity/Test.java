@@ -1,18 +1,22 @@
 package me.project.SpringProject.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+
 
 @Entity
 @Table(name = "tests")
@@ -22,7 +26,7 @@ public class Test {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String title;
 
     @Enumerated(EnumType.STRING)
@@ -34,17 +38,8 @@ public class Test {
     @Column
     private Difficulties difficulty;
 
-//    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-//    @JoinTable(name = "user_required_tests",
-//            joinColumns = @JoinColumn(name = "test_id"),
-//            inverseJoinColumns = @JoinColumn(name = "user_id"))
-//    private Set<User> usersRequired;
-//
-//    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-//    @JoinTable(name = "user_passed_tests",
-//            joinColumns = @JoinColumn(name = "test_id"),
-//            inverseJoinColumns = @JoinColumn(name = "user_id"))
-//    private Set<User> usersPassed;
+    @OneToMany(mappedBy = "test")
+    private Set<Question> questions;
 
     @Basic
     @Temporal(TemporalType.TIMESTAMP)

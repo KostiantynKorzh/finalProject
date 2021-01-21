@@ -1,15 +1,10 @@
 package me.project.SpringProject.controller;
 
-import me.project.SpringProject.entity.RequiredTest;
-import me.project.SpringProject.entity.Result;
-import me.project.SpringProject.entity.Test;
-import me.project.SpringProject.entity.User;
-import me.project.SpringProject.repository.RequiredTestRepository;
-import me.project.SpringProject.repository.ResultRepository;
-import me.project.SpringProject.repository.TestRepository;
-import me.project.SpringProject.repository.UserRepository;
+import me.project.SpringProject.entity.*;
+import me.project.SpringProject.repository.*;
 import me.project.SpringProject.request.AddTestRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +20,9 @@ public class UserController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    QuestionRepository questionRepository;
 
     @Autowired
     RequiredTestRepository requiredTestRepository;
@@ -53,8 +51,8 @@ public class UserController {
         resultRepository.findAllByUser(user).forEach(res -> passedTests.add(res.getTest()));
         Set<Test> requiredTests = new HashSet<>();
         requiredTestRepository.findAllByUser(user).forEach(req -> requiredTests.add(req.getTest()));
-        allTests.remove(passedTests);
-        allTests.remove(requiredTests);
+        allTests.removeAll(requiredTests);
+        allTests.removeAll(passedTests);
         return ResponseEntity.ok(allTests);
     }
 
@@ -65,7 +63,6 @@ public class UserController {
         Set<RequiredTest> requiredTests = requiredTestRepository.findAllByUser(user);
         Set<Test> tests = new HashSet<>();
         requiredTests.forEach(testReq -> tests.add(testReq.getTest()));
-//        System.out.println("requiredTests = " + requiredTests);
         return ResponseEntity.ok(tests);
     }
 
@@ -82,10 +79,23 @@ public class UserController {
                 .test(test)
                 .user(user)
                 .score(30.0)
-                .passTimestamp(new Timestamp(System.currentTimeMillis()))
+//                .passTimestamp(new Timestamp(System.currentTimeMillis()))
+                .passTimestamp(new Timestamp(3))
                 .build();
         resultRepository.save(result);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/{id}/takeTest/{testId}")
+    public ResponseEntity<?> getTest(@PathVariable Long id, @PathVariable Long testId) {
+        User user = userRepository.findById(id).get();
+        Test test = testRepository.findById(testId).get();
+        Set<Question> questions = questionRepository.findAllByTest(test);
+//        System.out.println(questions.size());
+        RequiredTest requiredTest = requiredTestRepository.findByUserAndTest(user, test).get();
+        requiredTest.getTest().setQuestions(questions);
+//        System.out.println(requiredTest.getTest());
+        return ResponseEntity.ok(requiredTest.getTest());
     }
 
 

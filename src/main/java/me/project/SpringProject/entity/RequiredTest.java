@@ -17,7 +17,7 @@ import javax.persistence.*;
 public class RequiredTest {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
