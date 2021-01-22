@@ -16,7 +16,7 @@ const AddTestsToUsersModal = ({props}) => {
 
     const handleAddOneTest = (e, id) => {
         AdminService.addOneTestToUser(userToAddTests, id);
-        AdminService.getNonRequiredTests(id).then(
+        AdminService.getAvailableTests(id).then(
             (response) => {
                 setTests(response.data);
             },
@@ -46,7 +46,7 @@ const AddTestsToUsersModal = ({props}) => {
                                 <td>{test.title}</td>
                                 <td>{test.subject}</td>
                                 <td>{test.difficulty}</td>
-                                <td>{test.created}</td>
+                                {/*<td>{test.created}</td>*/}
                                 <td>
                                     <Button type="submit" onClick={(e) => handleAddOneTest(e, test.id)}>ADD</Button>
                                 </td>

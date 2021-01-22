@@ -130,7 +130,16 @@ const CreateTestQuestionCard = (props) => {
 
     const postQuestion = () => {
 
-        handleNext();
+        for (let i = 0; i < answers.length; i++) {
+            answersToSend[i] = {
+                answerText: answers[i],
+                correct: false
+            }
+            if (i == correctAnswer - 1) {
+                answersToSend[i].correct = true;
+            }
+        }
+
         console.log(props.testId, questionText, answersToSend);
 
         const question = {
@@ -144,6 +153,7 @@ const CreateTestQuestionCard = (props) => {
                 console.log(resp.data);
             }
         );
+        return Promise.resolve();
     }
 
     let answersToSend = [{
@@ -152,17 +162,12 @@ const CreateTestQuestionCard = (props) => {
     }];
 
     const handleNext = () => {
-        for (let i = 0; i < answers.length; i++) {
-            answersToSend[i] = {
-                answerText: answers[i],
-                correct: false
-            }
-            if (i == correctAnswer - 1) {
-                answersToSend[i].correct = true;
-            }
-        }
+        postQuestion();
         console.log("NEXT = " + answers + ", " + questionText + ", correct = " + correctAnswer, "answers=", answersToSend);
-        // console.log("NEXT = " + answers);
+        // postQuestion();
+        // props.history.push('/admin');
+        window.location.reload();
+
     }
 
     const handleChangeQuestionText = (e) => {
@@ -191,9 +196,12 @@ const CreateTestQuestionCard = (props) => {
             <div>
                 <Button onClick={() => handleNext()}>Next</Button>
                 <Button onClick={() => {
-                    postQuestion();
-                    // props.history.push('/admin');
-                    // window.location.reload();
+                    postQuestion().then(() => {
+                            props.history.push('/admin/tests');
+                            window.location.reload();
+                        }
+                    );
+
                 }}>Finish</Button>
             </div>}
         </Card>

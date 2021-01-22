@@ -16,16 +16,9 @@ const updateUser = (id, user) => {
     return axios.post(API_URL + 'users/edit/' + id, {
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email,
-        password: user.password,
-        created: user.created,
-        roles: user.roles
     }, {headers: authHeader()});
 };
 
-const getNonRequiredTests = (id) => {
-    return axios.get(API_URL_USER + id + "/tests/available", {headers: authHeader()});
-};
 
 const addOneTestToUser = (id, testId) => {
     return axios.post(API_URL + 'users/addTests/add/' + id, {testId}, {headers: authHeader()});
@@ -40,6 +33,7 @@ const createTest = (test) => {
         title: test.title,
         subject: test.subject,
         difficulty: test.difficulty,
+        duration: test.duration
     }, {headers: authHeader()});
 };
 
@@ -55,14 +49,28 @@ const postQuestion = (question) => {
     }, {headers: authHeader()});
 };
 
+const getAvailableTests = (id) => {
+    return axios.get(API_URL_USER + id + "/tests/available", {headers: authHeader()});
+};
+
+const getUser = (id) => {
+    return axios.get(API_URL_USER + id, {headers: authHeader()});
+};
+
+const getAllUsersSorted = (param) => {
+    return axios.get(API_URL + 'users/sorted?param=' + param, {headers: authHeader()});
+};
+
 export default {
     getAll,
     deleteUser,
     updateUser,
-    getNonRequiredTests,
     addOneTestToUser,
     addTestsToUser,
     createTest,
     getTest,
-    postQuestion
+    postQuestion,
+    getAvailableTests,
+    getUser,
+    getAllUsersSorted
 };

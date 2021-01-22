@@ -10,6 +10,7 @@ import me.project.SpringProject.request.LoginRequest;
 import me.project.SpringProject.request.SignupRequest;
 import me.project.SpringProject.response.JwtResponse;
 import me.project.SpringProject.response.MessageResponse;
+import me.project.SpringProject.service.UserService;
 import me.project.SpringProject.userDetails.UserDetailsAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/auth")
 public class AuthController {
 
+    private final UserService userService;
+
+    @Autowired
+    AuthController(UserService userService) {
+        this.userService = userService;
+    }
+
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -50,7 +58,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        System.out.println("loginRequest = " + loginRequest.getEmail() + loginRequest.getPassword());
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -65,20 +72,24 @@ public class AuthController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        System.out.println(userDetails.toString());
-
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getUsername(),
+                userDetails.isAccountNonLocked(),
                 roles));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest signupRequest) {
-        if (userRepository.existsByEmail(signupRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
+//        if (userRepository.existsByEmail(signupRequest.getEmail())) {
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(new MessageResponse("Error: Email is already registered!"));
+//        }
+
+        if (userService.checkIfExistsByEmail(signupRequest.getEmail())) {
+            return ResponseEntity.badRequest()
                     .body(new MessageResponse("Error: Email is already registered!"));
         }
 

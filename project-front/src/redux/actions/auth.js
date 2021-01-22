@@ -39,7 +39,7 @@ export const register = (firstName, lastName, email, password) => (dispatch) => 
                 payload: message
             });
 
-            return Promise.reject();
+            return Promise.reject(message);
         });
 };
 

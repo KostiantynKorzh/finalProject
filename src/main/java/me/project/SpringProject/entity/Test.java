@@ -2,6 +2,7 @@ package me.project.SpringProject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -30,16 +31,22 @@ public class Test {
     private String title;
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(nullable = false)
     private Subjects subject;
 
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(nullable = false)
     private Difficulties difficulty;
 
     @OneToMany(mappedBy = "test")
     private Set<Question> questions;
+
+    @Column(nullable = false)
+    private Integer duration;
+
+//    @OneToMany(mappedBy = "test")
+//    private Set<RequiredTest> requiredTests;
 
     @Basic
     @Temporal(TemporalType.TIMESTAMP)

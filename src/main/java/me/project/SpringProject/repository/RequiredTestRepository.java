@@ -14,4 +14,8 @@ public interface RequiredTestRepository extends JpaRepository<RequiredTest, Long
     Optional<RequiredTest> findById(Long id);
 
     Optional<RequiredTest> findByUserAndTest(User user, Test test);
+
+    Set<RequiredTest> findAllByTest(Test test);
+
+    void deleteAllByTest(Test test);
 }

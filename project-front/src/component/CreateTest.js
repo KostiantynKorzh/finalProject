@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
 import AdminService from "../services/admin.service";
-import {Card, Form} from "react-bootstrap";
+import {Jumbotron, Card, Form} from "react-bootstrap";
 import CreateTestQuestionCard from "./CreateTestQuestionCard";
+import Header from "./Header";
 
 const CreateTest = (props) => {
 
@@ -19,20 +20,24 @@ const CreateTest = (props) => {
                 setTestToFill({
                     title: resp.data.title,
                     subject: resp.data.subject,
-                    difficulty: resp.data.difficulty
+                    difficulty: resp.data.difficulty,
+                    duration: resp.data.duration
                 })
                 setTestId(props.match.params.id);
             }
-    );
-    }, [props.match.params.id]);
+        );
+    }, []);
 
     return (
         <div>
-            <div>{testToFill.title}</div>
-            <div>{testToFill.subject}</div>
-            <div>{testToFill.difficulty}</div>
-            <div>{testId}</div>
-            <CreateTestQuestionCard testId={testId}/>
+            <Header/>
+            <Jumbotron>
+                <h1>{testToFill.title}</h1>
+                <h3>Subject: {testToFill.subject}</h3>
+                <h3>Difficulty: {testToFill.difficulty}</h3>
+                <h3>Duration: {testToFill.duration}</h3>
+                <CreateTestQuestionCard testId={testId} history={props.history}/>
+            </Jumbotron>
         </div>
     );
 

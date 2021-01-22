@@ -11,5 +11,6 @@ public class CreateTestRequest {
     private String title;
     private String subject;
     private String difficulty;
+    private Integer duration;
 
 }

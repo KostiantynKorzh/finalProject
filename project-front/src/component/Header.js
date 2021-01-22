@@ -8,29 +8,66 @@ import {
 } from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../redux/actions/auth";
+import LangService from "../services/lang.service";
 
 
-const Header = () => {
-
-    const [isAuth, setAuth] = useState(false);
-    const [isAdmin, setAdmin] = useState(false);
+const Header = (props) => {
 
     const {user: currentUser} = useSelector((state) => state.auth);
-    // console.log("User is" + JSON.stringify(currentUser));
-    const dispatch = useDispatch();
+
+    // const [langTemp, setLangTemp] = useState("");
+
+    const lang = localStorage.getItem('lang');
+
+    const [content, setContent] = useState({
+        home: "",
+        profile: "",
+        users: "",
+        tests: "",
+        allTests: "",
+        createTest: "",
+        user: "",
+        logout: "",
+        lang: "",
+        login: "",
+        signup: "",
+        passedTests: "",
+        requiredTests: ""
+    });
+
+    // useEffect(() => {
+    //     getContentLang(lang);
+    //     console.log("Here")
+    // }, [langTemp]);
 
     useEffect(() => {
-        if (currentUser) {
-            setAuth(true);
-            setAdmin(currentUser.roles.includes("ROLE_ADMIN"));
-        }
-    }, [currentUser]);
+        getContentLang(lang);
+        console.log("Initial effect");
+    }, []);
 
-    const login = (e) => {
-        setAuth(true);
-        console.log("Here")
-        // window.location.reload();
-    }
+    const getContentLang = (lang) => {
+        LangService.getContentHeader(lang).then(
+            resp => {
+                setContent({
+                    home: resp.data.home,
+                    profile: resp.data.profile,
+                    users: resp.data.users,
+                    tests: resp.data.tests,
+                    allTests: resp.data.allTests,
+                    createTest: resp.data.createTest,
+                    user: resp.data.user,
+                    logout: resp.data.logout,
+                    lang: resp.data.lang,
+                    login: resp.data.login,
+                    signup: resp.data.signup,
+                    passedTests: resp.data.passedTests,
+                    requiredTests: resp.data.requiredTests
+                });
+            }
+        );
+    };
+
+    const dispatch = useDispatch();
 
     const logOut = () => {
         dispatch(logout());
@@ -38,27 +75,44 @@ const Header = () => {
 
     return (
         <Navbar bg="light" expand="lg">
-            {/*<Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>*/}
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">
-                    <Nav.Link href="/home">Home</Nav.Link>
+                    <Nav.Link href="/home">{content.home}</Nav.Link>
+                    {currentUser && currentUser.roles.includes("ROLE_ADMIN") &&
+                    <Nav.Link href="/admin/users">{content.users}</Nav.Link>}
+                    {currentUser && currentUser.roles.includes("ROLE_ADMIN") &&
+                    <NavDropdown title={content.tests} id="tests-dropdown">
+                        <NavDropdown.Item href="/admin/tests">{content.allTests}</NavDropdown.Item>
+                        <NavDropdown.Item href="/admin/createTest">{content.createTest}</NavDropdown.Item>
+                    </NavDropdown>
+                    }
+                    {currentUser && !currentUser.roles.includes("ROLE_ADMIN") &&
+                    <NavDropdown title={content.tests} id="tests-dropdown">
+                        <NavDropdown.Item
+                            href={"/user/" + currentUser.id + "/passedTests"}>{content.passedTests}</NavDropdown.Item>
+                        <NavDropdown.Item
+                            href={"/user/" + currentUser.id + "/requiredTests"}>{content.requiredTests}</NavDropdown.Item>
+                    </NavDropdown>}
+                    {currentUser && <Nav.Link href="/profile">{content.profile}</Nav.Link>}
+                    {currentUser && <Nav.Link href="/home" onClick={logOut}>{content.logout}</Nav.Link>}
+                    {!currentUser && <Nav.Link href="/login">{content.login}</Nav.Link>}
+                    {!currentUser && <Nav.Link href="/signup">{content.signup}</Nav.Link>}
                 </Nav>
-                {currentUser &&
-                <NavDropdown title={currentUser.email} id="basic-nav-dropdown">
-                    <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
-                    <NavDropdown.Item onClick={logOut}>Logout</NavDropdown.Item>
-                    <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                    <NavDropdown.Divider/>
-                    <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-                </NavDropdown>}
-                {currentUser && currentUser.roles.includes("ROLE_ADMIN") &&
-                <Nav.Link href="/admin">Admin</Nav.Link>}
-                {currentUser &&
-                <Nav.Link href={`/user/${currentUser.id}`}>User</Nav.Link>}
-                {currentUser && <Nav.Link href="/profile">Profile</Nav.Link>}
-                {currentUser && <Nav.Link href="/home" onClick={logOut}>Logout</Nav.Link>}
-                {!currentUser && <Nav.Link onClick={login} href="/login">Login</Nav.Link>}
+                <NavDropdown title={content.lang} id="basic-nav-dropdown">
+                    <NavDropdown.Item onClick={() => {
+                        getContentLang("en");
+                        localStorage.setItem("lang", "en");
+                        // props.setLang("en");
+                        window.location.reload();
+                    }}>EN</NavDropdown.Item>
+                    <NavDropdown.Item onClick={() => {
+                        getContentLang("ua");
+                        localStorage.setItem("lang", "ua");
+                        // props.setLang("ua");
+                        window.location.reload();
+                    }}>UA</NavDropdown.Item>
+                </NavDropdown>
             </Navbar.Collapse>
         </Navbar>
     );

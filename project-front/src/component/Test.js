@@ -5,12 +5,20 @@ import authHeader from "../services/auth-header";
 import QuestionCard from "./QuestionCard";
 import {Button} from "react-bootstrap";
 import equals from "validator/es/lib/equals";
+import CompleteTest from "./CompleteTest";
+import Header from "./Header";
+import Timer from "./Timer";
 
 const Test = (props) => {
 
     const [checkedAnswers, setCheckedAnswers] = useState(new Set());
 
     const [results, setResults] = useState([]);
+
+    const [completed, setCompleted] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+
+    const [score, setScore] = useState(-20);
 
     const [test, setTest] = useState({
         title: "",
@@ -47,20 +55,52 @@ const Test = (props) => {
 
     }
 
+    useEffect(() => {
+        if (submitted) {
+            while (score < 0) {
+                console.log("Here")
+                setScore(percentage);
+                console.log("score submitted", score)
+            }
+        }
+    }, [submitted])
+
+    let scoreTemp = 0;
+    let percentage = -20;
+
     const handleSubmitTest = () => {
-        console.log("Results", results);
-        let score = 0;
+
+        setSubmitted(true);
+
         results.map(ansObj => {
             if (ansObj.chosenAnswerId == ansObj.correctAnswerId) {
-                score++;
+                scoreTemp++;
             }
-        })
+        });
 
-        console.log(score / results.length * 100 + '%');
+        setCompleted(true);
+
+        // console.log("ScoreTemp = ", scoreTemp);
+        // console.log("ScoreTemp %%% = ", scoreTemp / results.length * 100);
+
+
+        percentage = scoreTemp / results.length * 100;
+        setScore(scoreTemp / results.length * 100);
+
+        // console.log("percentage = ", percentage);
+        // console.log("score", score);
     }
 
+    // useEffect(() => {
+    //     if (percentage > 0) {
+    //         setScore(percentage);
+    //         console.log("perc = ", percentage);
+    //     } else {
+    //         console.log("else", score);
+    //     }
+    // }, [submitted, completed, score]);
+
     useEffect(() => {
-        console.log("params =", props.match.params.id, props.match.params.testId);
         UserService.getTest(props.match.params.id, props.match.params.testId).then(
             resp => {
                 console.log(resp.data);
@@ -79,9 +119,13 @@ const Test = (props) => {
 
     return (
         <div>
+            {completed &&
+            <Header/>
+            }
             <div>TEST</div>
             <div>{test.title}</div>
-            {test.questions.map(question => {
+            {!completed &&
+            test.questions.map(question => {
                 count++;
                 return (
                     <QuestionCard props={{
@@ -92,7 +136,24 @@ const Test = (props) => {
                         handleChangeInCard: handleChangeInCard
                     }}/>);
             })}
+            {/*{!completed &&*/}
             <Button onClick={handleSubmitTest}>Submit</Button>
+            {/*}*/}
+            {score > 0 &&
+            <CompleteTest props={score}/>
+            }
+            <div style={{
+                position: "absolute",
+                left: "0",
+                bottom: "0",
+                right: "0"
+            }}>
+                {!submitted &&
+                <Timer
+                    time={15}
+                    props={props}
+                />}
+            </div>
         </div>
     );
 

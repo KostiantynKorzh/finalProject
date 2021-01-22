@@ -10,11 +10,16 @@ import {clearMessage} from "./redux/actions/message";
 import BoardUser from "./component/BoardUser";
 import {history} from "./utils/history";
 import {logout} from "./redux/actions/auth";
-import BoardAdmin from "./component/BoardAdmin";
 import Test from "./component/Test";
 import CreateTestInit from "./component/CreateTestInit";
 import Profile from "./component/Profile";
 import CreateTest from "./component/CreateTest";
+import AdminUsers from "./component/AdminUsers";
+import AddTestsToUser from "./component/AddTestsToUser";
+import EditUser from "./component/EditUser";
+import AdminTests from "./component/AdminTests";
+import UserPassedTests from "./component/UserPassedTests";
+import UserRequiredTests from "./component/UserRequiredTests";
 
 function App() {
 
@@ -35,6 +40,12 @@ function App() {
         }
     }, [currentUser]);
 
+    const [lang, setLang] = useState("");
+
+    useEffect(() => {
+        console.log("from App.js", lang);
+    }, [lang]);
+
     return (
         <Router history={history}>
             <Switch>
@@ -47,8 +58,13 @@ function App() {
                 <Route exact path="/signup" component={Signup}/>
                 <Route exact path="/profile" component={Profile}/>
                 <Route exact path="/user/:id/takeTest/:testId" component={Test}/>
-                <Route exct path="/user/:id" component={BoardUser}/>
-                <Route exact path="/admin" component={BoardAdmin}/>
+                <Route exct path="/user/:id/passedTests" component={UserPassedTests}/>
+                <Route exct path="/user/:id/requiredTests" component={UserRequiredTests}/>
+                <Route exact path="/admin/users" component={AdminUsers}/>
+                <Route exact path="/admin/:id/addTests" component={AddTestsToUser}/>
+                <Route exact path="/admin/editUser/:id" component={EditUser}/>
+                <Route exact path="/admin/tests" component={AdminTests}/>
+
                 <Route exact path="/admin/createTest" component={CreateTestInit}/>
                 <Route exact path="/admin/createTest/:id" component={CreateTest}/>
                 {/*<Route exact path="/admin/createTest" component={CreateTestModal}/>*/}

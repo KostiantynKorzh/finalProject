@@ -5,11 +5,15 @@ import me.project.SpringProject.repository.*;
 import me.project.SpringProject.request.AddTestRequest;
 import me.project.SpringProject.request.CreateQuestion;
 import me.project.SpringProject.request.CreateTestRequest;
+import me.project.SpringProject.request.UpdateUserRequest;
+import me.project.SpringProject.service.TestService;
+import me.project.SpringProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +46,12 @@ public class AdminController {
     @Autowired
     AnswerRepository answerRepository;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    TestService testService;
+
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUsersByRoles() {
@@ -54,30 +64,14 @@ public class AdminController {
     @DeleteMapping("/users/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        User user = userRepository.findById(id).get();
-        System.out.println(user);
-        userRepository.delete(user);
-        return ResponseEntity.ok(user);
+        userService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/users/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) {
-
-        System.out.println(id);
-        System.out.println(user);
-
-        User newUser = User.builder()
-                .id(id)
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .created(user.getCreated())
-                .roles(user.getRoles())
-                .build();
-        userRepository.save(newUser);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest req) {
+        return userService.updateUser(id, req);
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
@@ -85,12 +79,7 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllRequiredTests(@PathVariable Long id) {
         User user = userRepository.findById(id).get();
-//        List<Test> allTests = testRepository.findAll();
-//        Set<Result> passedTests = resultRepository.findAllByUser(user);
         Set<RequiredTest> requiredTests = requiredTestRepository.findAllByUser(user);
-//        allTests.removeAll(nonRequiredTests);
-//        allTests.removeAll(passedTests);
-//        return ResponseEntity.ok(allTests);
         return ResponseEntity.ok(requiredTests);
     }
 
@@ -98,15 +87,7 @@ public class AdminController {
     @PostMapping("/users/addTests/add/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> addTestsToUser(@PathVariable Long id, @RequestBody AddTestRequest req) {
-        User user = userRepository.findById(id).get();
-        Test test = testRepository.findById(req.getTestId()).get();
-        RequiredTest requiredTestCheck = requiredTestRepository.findByUserAndTest(user, test)
-                .orElse(RequiredTest.builder()
-                        .test(test)
-                        .user(user)
-                        .build());
-        requiredTestRepository.save(requiredTestCheck);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(userService.addTestsToUser(id, req));
     }
 
     @PostMapping("/createTest")
@@ -116,10 +97,10 @@ public class AdminController {
                 .title(req.getTitle())
                 .subject(Subjects.valueOf(req.getSubject()))
                 .difficulty(Difficulties.valueOf(req.getDifficulty()))
+                .duration(req.getDuration())
                 .created(new Date(System.currentTimeMillis()))
                 .build();
         testRepository.save(test);
-//        System.out.println(test);
         return ResponseEntity.ok(test);
     }
 
@@ -129,10 +110,6 @@ public class AdminController {
         Test test = testRepository.findById(testId).get();
         return ResponseEntity.ok(test);
     }
-
-    private Long testId;
-    private String questionText;
-    private List<Answer> answers;
 
     @PostMapping("/createTest/{testId}/question")
     public ResponseEntity<?> createQuestion(@PathVariable Long testId, @RequestBody CreateQuestion req) {
@@ -152,12 +129,17 @@ public class AdminController {
                 .isCorrect(answer.isCorrect())
                 .question(question)
                 .build()).collect(Collectors.toSet());
-//        answers.stream().map(answer -> answerRepository.save(answer));
-//        System.out.println("answers = " + answers);
         for (Answer answer : answers) {
             answerRepository.save(answer);
         }
         return ResponseEntity.ok(question);
     }
+
+    @GetMapping("users/sorted")
+    public ResponseEntity<?> sortedUsers(@RequestParam String param) {
+        List<User> users = userService.getAllSorted(param);
+        return ResponseEntity.ok(users);
+    }
+
 
 }

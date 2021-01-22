@@ -33,6 +33,17 @@ public class UserController {
     @Autowired
     ResultRepository resultRepository;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUser(@PathVariable Long id){
+        User user = userRepository.findById(id).get();
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getHomeContent(){
+        return ResponseEntity.ok("Home Content");
+    }
+
     @GetMapping("/{id}/tests/passed")
     public ResponseEntity<?> getAllPassedTests(@PathVariable Long id) {
         User user = userRepository.findById(id).get();
@@ -42,7 +53,6 @@ public class UserController {
         return ResponseEntity.ok(passedTests);
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
     @GetMapping("/{id}/tests/available")
     public ResponseEntity<?> getAllAvailableTests(@PathVariable Long id) {
         User user = userRepository.findById(id).get();
@@ -56,7 +66,6 @@ public class UserController {
         return ResponseEntity.ok(allTests);
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
     @GetMapping("/{id}/tests/required")
     public ResponseEntity<?> getAllRequiredTests(@PathVariable Long id) {
         User user = userRepository.findById(id).get();
@@ -66,7 +75,6 @@ public class UserController {
         return ResponseEntity.ok(tests);
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
     @PostMapping("/{id}/test")
     public ResponseEntity<?> passTest(@PathVariable Long id, @RequestBody AddTestRequest req) {
         User user = userRepository.findById(id).get();
@@ -90,13 +98,12 @@ public class UserController {
     public ResponseEntity<?> getTest(@PathVariable Long id, @PathVariable Long testId) {
         User user = userRepository.findById(id).get();
         Test test = testRepository.findById(testId).get();
-        Set<Question> questions = questionRepository.findAllByTest(test);
+//        Set<Question> questions = questionRepository.findAllByTest(test);
 //        System.out.println(questions.size());
         RequiredTest requiredTest = requiredTestRepository.findByUserAndTest(user, test).get();
-        requiredTest.getTest().setQuestions(questions);
+//        requiredTest.getTest().setQuestions(questions);
 //        System.out.println(requiredTest.getTest());
         return ResponseEntity.ok(requiredTest.getTest());
     }
-
 
 }

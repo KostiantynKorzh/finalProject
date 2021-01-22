@@ -1,18 +1,20 @@
-import {GET_ALL_USERS_FAIL, GET_ALL_USERS_SUCCESS} from "../actions/types";
+import {GET_ALL_USERS_FAIL, GET_AVAILABLE_TESTS_SUCCESS} from "../actions/types";
+
 
 const initialState = {
-    users: []
+    tests: []
 }
+
 
 export default function (state = initialState, action) {
     const {type, payload} = action;
 
     switch (type) {
-        case GET_ALL_USERS_SUCCESS:
+        case GET_AVAILABLE_TESTS_SUCCESS:
             return {
                 ...state,
-                users: payload
-            };
+                tests: payload
+            }
         case GET_ALL_USERS_FAIL:
             return {
                 ...state
@@ -20,5 +22,4 @@ export default function (state = initialState, action) {
         default:
             return state;
     }
-
 }

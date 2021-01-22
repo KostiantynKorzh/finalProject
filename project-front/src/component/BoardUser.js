@@ -1,23 +1,28 @@
 import React, {useState, useEffect} from "react";
 
 import UserService from "../services/user.service";
-import message from "../redux/reducers/message";
 import {useSelector} from "react-redux";
-import axios from "axios";
-import authHeader from "../services/auth-header";
 import {Button, Modal, Table} from "react-bootstrap";
 import Header from "./Header";
-import {Redirect} from "react-router-dom";
+import LangService from "../services/lang.service";
 
 const BoardUser = (props) => {
 
     const {user: currentUser} = useSelector((state) => state.auth);
 
-    const [content, setContent] = useState([]);
+    const [content, setContent] = useState({
+        requiredTests: "",
+        passedTests: "",
+        pass: "",
+        take: ""
+    });
+
+    const [needRefresh, setNeedRefresh] = useState(false);
 
     const [passedTests, setPassedTests] = useState([]);
     const [requiredTests, setRequiredTests] = useState([]);
 
+    const lang = localStorage.getItem('lang');
 
     useEffect(() => {
         UserService.getRequiredTests(props.match.params.id).then(
@@ -32,10 +37,24 @@ const BoardUser = (props) => {
                 setPassedTests(response.data);
             });
 
+        // getContent(lang);
+
     }, []);
 
-    const handlePass = (test) => {
-        UserService.passTest(props.match.params.id, test.id);
+    // React.useEffect(() => {
+    //     console.log("Effect");
+    //     window.addEventListener('storage', () => {
+    //         console.log("Listener");
+    //     });
+    //
+    //
+    // },[])
+
+    // useEffect(() => {
+    //     getContent(lang);
+    // }, [lang])
+
+    useEffect(() => {
         UserService.getRequiredTests(props.match.params.id).then(
             (response) => {
                 console.log(response.data);
@@ -47,6 +66,26 @@ const BoardUser = (props) => {
                 console.log(response.data);
                 setPassedTests(response.data);
             });
+        // setNeedRefresh(false);
+    }, [needRefresh]);
+
+
+
+    const handlePass = (test) => {
+        UserService.passTest(props.match.params.id, test.id);
+        setNeedRefresh(true);
+        // setNeedRefresh(false);
+        // UserService.getRequiredTests(props.match.params.id).then(
+        //     (response) => {
+        //         console.log(response.data);
+        //         setRequiredTests(response.data);
+        //     });
+        //
+        // UserService.getPassedTests(props.match.params.id).then(
+        //     (response) => {
+        //         console.log(response.data);
+        //         setPassedTests(response.data);
+        //     });
         console.log(test.id);
     }
 
@@ -61,7 +100,7 @@ const BoardUser = (props) => {
             <Header/>
             <div className="container">
                 <header className="jumbotron">
-                    <h1>REQUIRED TESTS</h1>
+                    <h1>{content.requiredTests}</h1>
                     <Table>
                         <tbody>
                         {requiredTests.map(test =>
@@ -69,13 +108,13 @@ const BoardUser = (props) => {
                                 <td>
                                     <div>{test.title}</div>
                                 </td>
-                                <td><Button onClick={() => handleTake(test)}>TAKE</Button></td>
-                                <td><Button onClick={() => handlePass(test)}>PASS</Button></td>
+                                <td><Button onClick={() => handleTake(test)}>{content.take}</Button></td>
+                                <td><Button onClick={() => handlePass(test)}>{content.pass}</Button></td>
                             </tr>
                         )}
                         </tbody>
                     </Table>
-                    <h1>PASSED TESTS</h1>
+                    <h1>{content.passedTests}</h1>
                     <h3>{passedTests.map(test =>
                         <div>{test.title}</div>
                     )}</h3>
