@@ -7,7 +7,6 @@ import Login from "./component/Login";
 import Signup from "./component/Signup";
 import {useDispatch, useSelector} from "react-redux";
 import {clearMessage} from "./redux/actions/message";
-import BoardUser from "./component/BoardUser";
 import {history} from "./utils/history";
 import {logout} from "./redux/actions/auth";
 import Test from "./component/Test";
@@ -60,6 +59,7 @@ function App() {
                 <Route exact path="/profile" component={Profile}/>
                 <Route exact path="/user/takeTest/:testId" component={Test}/>
                 <Route exct path="/user/:id/passedTests" component={UserPassedTests}/>
+                {/* remove id */}
                 <Route exct path="/user/:id/requiredTests" component={UserRequiredTests}/>
                 <Route exact path="/admin/users" component={AdminUsers}/>
                 <Route exact path="/admin/:id/addTests" component={AddTestsToUser}/>

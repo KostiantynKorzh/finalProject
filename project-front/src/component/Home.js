@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Header from "./Header";
 import UserService from "../services/user.service";
-import Timer from "./Timer";
+import Welcome from "./Welcome";
 
 const Home = () => {
 
@@ -28,12 +28,14 @@ const Home = () => {
     }, [])
 
     return (
-        <div>
+        <div className="fill-window" style={{
+            backgroundImage: 'url(/background-home.jpg)',
+            border: 'solid green',
+        }}>
             <Header/>
-            <h2>Home Page</h2>
-            <h2>{content}</h2>
-            <h2>{content}</h2>
-            {/*<Timer time={67}/>*/}
+            <div className="centered">
+                <Welcome/>
+            </div>
         </div>
     );
 

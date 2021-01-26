@@ -1,38 +1,47 @@
-.App {
-  text-align: center;
+html, body {
+    height: 100%;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.homeBack {
+    height: 100%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.fill-window {
+    height: 100%;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.rectangle {
+    width: fit-content;
+    padding: 30px 100px;
+    color: white;
+    background-color: rgb(77, 77, 77);
+    border-radius: 7px;
+    text-align: center;
 }
 
-.App-link {
-  color: #61dafb;
+.centered {
+    height: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.auth-buttons {
+    width: 100%;
+    background-color: rgb(77, 77, 77);
+    font-size: 5vh;
+    border: none;
 }
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary {
+    /*color: white;*/
+    background-color: rgb(77, 77, 77);
+    text-decoration: none;
+    outline: none;
+    box-shadow: none;
+}
+
