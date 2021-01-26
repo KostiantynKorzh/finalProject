@@ -13,7 +13,6 @@ public class UserDetailsServiceAuth implements UserDetailsService{
     @Autowired
     UserRepository userRepository;
 
-    //------------ OPTIONAL --------------//
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return UserDetailsAuth.build(userRepository.findByEmail(email).get());

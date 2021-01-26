@@ -20,6 +20,7 @@ import EditUser from "./component/EditUser";
 import AdminTests from "./component/AdminTests";
 import UserPassedTests from "./component/UserPassedTests";
 import UserRequiredTests from "./component/UserRequiredTests";
+import EditTest from "./component/EditTest";
 
 function App() {
 
@@ -57,13 +58,14 @@ function App() {
                 <Route exact path="/login" component={Login}/>
                 <Route exact path="/signup" component={Signup}/>
                 <Route exact path="/profile" component={Profile}/>
-                <Route exact path="/user/:id/takeTest/:testId" component={Test}/>
+                <Route exact path="/user/takeTest/:testId" component={Test}/>
                 <Route exct path="/user/:id/passedTests" component={UserPassedTests}/>
                 <Route exct path="/user/:id/requiredTests" component={UserRequiredTests}/>
                 <Route exact path="/admin/users" component={AdminUsers}/>
                 <Route exact path="/admin/:id/addTests" component={AddTestsToUser}/>
                 <Route exact path="/admin/editUser/:id" component={EditUser}/>
                 <Route exact path="/admin/tests" component={AdminTests}/>
+                <Route exact path="/admin/editTest/:id" component={EditTest}/>
 
                 <Route exact path="/admin/createTest" component={CreateTestInit}/>
                 <Route exact path="/admin/createTest/:id" component={CreateTest}/>

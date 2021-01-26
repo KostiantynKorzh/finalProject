@@ -42,7 +42,6 @@ const Header = (props) => {
 
     useEffect(() => {
         getContentLang(lang);
-        console.log("Initial effect");
     }, []);
 
     const getContentLang = (lang) => {

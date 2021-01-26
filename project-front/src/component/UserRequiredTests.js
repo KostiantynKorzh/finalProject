@@ -19,32 +19,18 @@ const UserRequiredTests = (props) => {
             (response) => {
                 setRequiredTests(response.data);
             });
-        // getContent();
     }, []);
 
-    // useEffect(() => {
-    //     getContent(lang);
-    // }, [lang])
 
     useEffect(() => {
         UserService.getRequiredTests(props.match.params.id).then(
             (response) => {
                 setRequiredTests(response.data);
             });
-        // setNeedRefresh(false);
     }, [needRefresh]);
 
-    // const getContent = (lang) => {
-    //     LangService.get(lang).then(
-    //         resp => {
-    //             setContent({
-    //                 passedTests: resp.data.passedTests,
-    //             });
-    //         });
-    // };
-
     const handleTake = (test) => {
-        let path = `/user/${props.match.params.id}/takeTest/${test.id}`;
+        let path = `/user/takeTest/${test.id}`;
         props.history.push(path);
         window.location.reload();
     }
@@ -81,11 +67,16 @@ const UserRequiredTests = (props) => {
                             </td>
                             <td>
                                 <Button
-                                onClick={()=>handleTake(test)}
+                                    onClick={() => handleTake(test)}
                                 >Take</Button>
                             </td>
                             <td>
-                                <Button>Pass</Button>
+                                <Button
+                                    onClick={() => {
+                                        UserService.passTest(props.match.params.id, test.id).then(
+                                            () => setNeedRefresh(true));
+                                    }}
+                                >Pass</Button>
                             </td>
                         </tr>
                     )}

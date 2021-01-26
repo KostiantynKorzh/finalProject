@@ -1,14 +1,21 @@
 package me.project.SpringProject.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.project.SpringProject.entity.RequiredTest;
+import me.project.SpringProject.entity.RoleType;
 import me.project.SpringProject.entity.Test;
 import me.project.SpringProject.entity.User;
+import me.project.SpringProject.repository.RoleRepository;
 import me.project.SpringProject.repository.UserRepository;
 import me.project.SpringProject.request.AddTestRequest;
 import me.project.SpringProject.request.UpdateUserRequest;
 import me.project.SpringProject.response.MessageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,19 +26,13 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
+
 public class UserService {
     private final UserRepository userRepository;
-
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Autowired
-    private TestService testService;
-
-    @Autowired
-    private RequiredTestService requiredTestService;
+    private final TestService testService;
+    private final RoleRepository roleRepository;
+    private final RequiredTestService requiredTestService;
 
     public boolean checkIfExistsByEmail(String email) {
         boolean exists = userRepository.existsByEmail(email);
@@ -49,21 +50,16 @@ public class UserService {
         }
     }
 
-    public List<User> getAllSorted(String param) {
-        List<User> users;
-        switch (param) {
-            case "firstName":
-                users = userRepository.findAllByOrderByFirstName();
-                break;
-            case "lastName":
-                users = userRepository.findAllByOrderByLastName();
-                break;
-            case "email":
-                users = userRepository.findAllByOrderByEmail();
-                break;
-            default:
-                users = userRepository.findAll();
+    public Page<User> getAllSorted(String param, Integer page) {
+        Page<User> users;
+        Sort sort;
+        if (param == null || param.isEmpty()) {
+            sort = Sort.unsorted();
+        } else {
+            sort = Sort.by(param);
         }
+        Pageable paging = PageRequest.of(page, 2, sort);
+        users = userRepository.findAllByRoles(roleRepository.findByName(RoleType.ROLE_USER).get(), paging);
         return users;
     }
 
@@ -76,7 +72,8 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<?> updateUser(Long id, UpdateUserRequest req) {
+    // orElse ----!!!----
+    public User updateUser(Long id, UpdateUserRequest req) {
         User oldUser = userRepository.findById(id).get();
 
         User newUser = User.builder()
@@ -88,14 +85,13 @@ public class UserService {
                 .created(oldUser.getCreated())
                 .roles(oldUser.getRoles())
                 .build();
-        userRepository.save(newUser);
-        return ResponseEntity.ok(newUser);
+        return userRepository.save(newUser);
     }
 
+    // NO!
     public Optional<RequiredTest> addTestsToUser(Long id, AddTestRequest req) {
         User user = userRepository.findById(id).get();
         Test test = testService.findById(req.getTestId()).get();
-        requiredTestService.addRequiredTest(user,test);
-        return requiredTestService.addRequiredTest(user,test);
+        return requiredTestService.addRequiredTest(user, test);
     }
 }

@@ -3,6 +3,9 @@ package me.project.SpringProject.repository;
 import me.project.SpringProject.entity.Role;
 import me.project.SpringProject.entity.Test;
 import me.project.SpringProject.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +20,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByRoles(Role role);
 
+    Page<User> findAllByRoles(Role role, Pageable pageable);
+
     List<User> findAll();
 
     List<User> findAllByOrderByFirstName();
@@ -24,6 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByOrderByLastName();
 
     List<User> findAllByOrderByEmail();
+
 
     boolean existsByEmail(String email);
 }

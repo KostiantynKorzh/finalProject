@@ -3,9 +3,11 @@ package me.project.SpringProject.controller;
 import me.project.SpringProject.entity.*;
 import me.project.SpringProject.repository.*;
 import me.project.SpringProject.request.AddTestRequest;
+import me.project.SpringProject.userDetails.UserDetailsAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -33,14 +35,21 @@ public class UserController {
     @Autowired
     ResultRepository resultRepository;
 
+//    @GetMapping
+//    public ResponseEntity<?> getUser(Authentication authentication) {
+//        UserDetailsAuth userPrincipal = (UserDetailsAuth) authentication.getPrincipal();
+//        User user = userRepository.findById(userPrincipal.getId()).get();
+//        return ResponseEntity.ok(user);
+//    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUser(@PathVariable Long id){
+    public ResponseEntity<?> getUser(@PathVariable Long id) {
         User user = userRepository.findById(id).get();
         return ResponseEntity.ok(user);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> getHomeContent(){
+    public ResponseEntity<?> getHomeContent() {
         return ResponseEntity.ok("Home Content");
     }
 
@@ -81,14 +90,11 @@ public class UserController {
         Test test = testRepository.findById(req.getTestId()).get();
         RequiredTest requiredTest = requiredTestRepository.findByUserAndTest(user, test).get();
         requiredTestRepository.delete(requiredTest);
-//        test.getUsersRequired().remove(user);
-//        test.getUsersPassed().add(user);
         Result result = Result.builder()
                 .test(test)
                 .user(user)
                 .score(30.0)
-//                .passTimestamp(new Timestamp(System.currentTimeMillis()))
-                .passTimestamp(new Timestamp(3))
+                .passTimestamp(new Timestamp(System.currentTimeMillis()))
                 .build();
         resultRepository.save(result);
         return ResponseEntity.ok(result);
@@ -98,11 +104,7 @@ public class UserController {
     public ResponseEntity<?> getTest(@PathVariable Long id, @PathVariable Long testId) {
         User user = userRepository.findById(id).get();
         Test test = testRepository.findById(testId).get();
-//        Set<Question> questions = questionRepository.findAllByTest(test);
-//        System.out.println(questions.size());
         RequiredTest requiredTest = requiredTestRepository.findByUserAndTest(user, test).get();
-//        requiredTest.getTest().setQuestions(questions);
-//        System.out.println(requiredTest.getTest());
         return ResponseEntity.ok(requiredTest.getTest());
     }
 

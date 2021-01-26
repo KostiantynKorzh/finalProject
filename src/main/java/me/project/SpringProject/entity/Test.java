@@ -34,19 +34,15 @@ public class Test {
     @Column(nullable = false)
     private Subjects subject;
 
-
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false)
     private Difficulties difficulty;
 
-    @OneToMany(mappedBy = "test")
-    private Set<Question> questions;
+//    @OneToMany(mappedBy = "test")
+//    private Set<Question> questions;
 
     @Column(nullable = false)
     private Integer duration;
-
-//    @OneToMany(mappedBy = "test")
-//    private Set<RequiredTest> requiredTests;
 
     @Basic
     @Temporal(TemporalType.TIMESTAMP)

@@ -11,6 +11,8 @@ import Timer from "./Timer";
 
 const Test = (props) => {
 
+    const user = JSON.parse(localStorage.getItem("user"));
+
     const [checkedAnswers, setCheckedAnswers] = useState(new Set());
 
     const [results, setResults] = useState([]);
@@ -18,13 +20,14 @@ const Test = (props) => {
     const [completed, setCompleted] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
-    const [score, setScore] = useState(-20);
+    const [score, setScore] = useState(-30);
 
     const [test, setTest] = useState({
         title: "",
         subject: "",
         difficulty: "",
-        questions: []
+        questions: [],
+        duration: -1
     });
 
     // const receiveResult = (value) => {
@@ -32,7 +35,6 @@ const Test = (props) => {
     // }
 
     const handleChangeInCard = (questionId, e, correctAnswer) => {
-        console.log("Parent", questionId + " : " + e.target.id + ", correct =", correctAnswer);
         const ansObj = {
             questionId: questionId,
             chosenAnswerId: e.target.id,
@@ -40,12 +42,10 @@ const Test = (props) => {
         }
 
         const duplicateIndex = results.findIndex(obj => obj.questionId == ansObj.questionId);
-        console.log("duplicateIndex", duplicateIndex);
         if (duplicateIndex >= 0) {
             setResults(prev => {
                 const newArray = prev.slice(0, duplicateIndex)
                     .concat(prev.slice(duplicateIndex + 1));
-                console.log("Cutted array", newArray);
                 return [...newArray, ansObj];
             })
         } else {
@@ -57,11 +57,11 @@ const Test = (props) => {
 
     useEffect(() => {
         if (submitted) {
-            while (score < 0) {
-                console.log("Here")
-                setScore(percentage);
-                console.log("score submitted", score)
+            console.log(percentage);
+            if (percentage <= -20) {
+                percentage = 0;
             }
+            setScore(percentage);
         }
     }, [submitted])
 
@@ -80,35 +80,21 @@ const Test = (props) => {
 
         setCompleted(true);
 
-        // console.log("ScoreTemp = ", scoreTemp);
-        // console.log("ScoreTemp %%% = ", scoreTemp / results.length * 100);
-
-
         percentage = scoreTemp / results.length * 100;
-        setScore(scoreTemp / results.length * 100);
-
-        // console.log("percentage = ", percentage);
-        // console.log("score", score);
+        console.log("temp", scoreTemp);
+        console.log("p", percentage)
+        setScore(percentage);
     }
 
-    // useEffect(() => {
-    //     if (percentage > 0) {
-    //         setScore(percentage);
-    //         console.log("perc = ", percentage);
-    //     } else {
-    //         console.log("else", score);
-    //     }
-    // }, [submitted, completed, score]);
-
     useEffect(() => {
-        UserService.getTest(props.match.params.id, props.match.params.testId).then(
+        UserService.getTest(user.id, props.match.params.testId).then(
             resp => {
-                console.log(resp.data);
                 setTest({
                     title: resp.data.title,
                     subject: resp.data.subject,
                     difficulty: resp.data.difficulty,
-                    questions: resp.data.questions
+                    questions: resp.data.questions,
+                    duration: resp.data.duration
                 });
             }
         );
@@ -139,8 +125,13 @@ const Test = (props) => {
             {/*{!completed &&*/}
             <Button onClick={handleSubmitTest}>Submit</Button>
             {/*}*/}
-            {score > 0 &&
-            <CompleteTest props={score}/>
+            {score >= 0 &&
+            <CompleteTest props={{
+                score: score,
+                userId: user.id,
+                testId: props.match.params.testId
+            }}
+            />
             }
             <div style={{
                 position: "absolute",
@@ -148,9 +139,9 @@ const Test = (props) => {
                 bottom: "0",
                 right: "0"
             }}>
-                {!submitted &&
+                {!submitted && test.duration > 0 &&
                 <Timer
-                    time={15}
+                    time={test.duration}
                     props={props}
                 />}
             </div>

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import AdminService from "../services/admin.service";
 import Header from "./Header";
-import {Jumbotron, Dropdown, Table} from "react-bootstrap";
+import {Jumbotron, Dropdown, Table, Pagination} from "react-bootstrap";
 
 const AdminUsers = (props) => {
 
@@ -11,23 +11,51 @@ const AdminUsers = (props) => {
 
     const [param, setParam] = useState("");
 
+    const [currentPage, setCurrentPage] = useState(0);
+    const [sizePage, setSizePage] = useState(0);
+
+    const [pages, setPages] = useState([]);
+
     useEffect(() => {
-        fetchUsers(param);
+        fetchUsers(param, currentPage);
     }, []);
 
     useEffect(() => {
-        fetchUsers(param);
+        fetchUsers(param, currentPage);
         setDeleted(false);
     }, [deleted])
 
     useEffect(() => {
-        fetchUsers(param);
+        fetchUsers(param, currentPage);
     }, [param]);
 
-    const fetchUsers = (param) => {
-        AdminService.getAllUsersSorted(param).then((response) => {
-            setUsers(response.data);
-        });
+    useEffect(() => {
+        setPages([]);
+        for (let i = 0; i < sizePage; i++) {
+            setPages(prevState => [...prevState,
+                <Pagination.Item
+                    key={i}
+                    active={i === currentPage}
+                    onClick={() => {
+                        if (i !== currentPage) {
+                            fetchUsers(param, i);
+                            setCurrentPage(i);
+                        }
+                    }}>
+                    {i + 1}
+                </Pagination.Item>]);
+        }
+    }, [sizePage, currentPage]);
+
+    const fetchUsers = (param, page) => {
+        AdminService.getAllUsersSorted(param, page).then(
+            resp => {
+                console.log(resp.data);
+                setUsers(resp.data.content);
+                setCurrentPage(resp.data.number);
+                setSizePage(resp.data.totalPages);
+
+            });
     };
 
     const TableColumns = () => {
@@ -85,14 +113,17 @@ const AdminUsers = (props) => {
                     <Dropdown.Menu>
                         <Dropdown.Item
                             eventKey="firstName"
+                            active={"firstName" === param}
                             onSelect={(e) => setParam(e)}
                         >First Name</Dropdown.Item>
                         <Dropdown.Item
                             eventKey="lastName"
+                            active={"lastName" === param}
                             onSelect={(e) => setParam(e)}
                         >Last Name</Dropdown.Item>
                         <Dropdown.Item
                             eventKey="email"
+                            active={"email" === param}
                             onSelect={(e) => setParam(e)}
                         >Email</Dropdown.Item>
                     </Dropdown.Menu>
@@ -108,6 +139,9 @@ const AdminUsers = (props) => {
                     </thead>
                     <TableColumns/>
                 </Table>
+                <Pagination>
+                    {pages}
+                </Pagination>
             </Jumbotron>
         </div>
     );

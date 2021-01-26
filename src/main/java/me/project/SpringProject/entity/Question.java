@@ -2,6 +2,8 @@ package me.project.SpringProject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -27,12 +29,11 @@ public class Question {
     private String questionText;
 
     @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "test_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Test test;
 
     @OneToMany(mappedBy = "question",
-            cascade = CascadeType.ALL,
             fetch = FetchType.EAGER)
     private Set<Answer> answers;
 

@@ -9,10 +9,12 @@ import me.project.SpringProject.request.UpdateUserRequest;
 import me.project.SpringProject.service.TestService;
 import me.project.SpringProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,8 +72,8 @@ public class AdminController {
 
     @PostMapping("/users/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest req) {
-        return userService.updateUser(id, req);
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest req) {
+        return ResponseEntity.ok(userService.updateUser(id, req));
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
@@ -117,12 +119,9 @@ public class AdminController {
 
         Question question = Question.builder()
                 .questionText(req.getQuestionText())
-                .test(test)
-//                .answers(answers)
+//                .test(test)
                 .build();
         questionRepository.save(question);
-
-        System.out.println(req);
 
         Set<Answer> answers = req.getAnswers().stream().map(answer -> Answer.builder()
                 .answerText(answer.getAnswerText())
@@ -136,8 +135,9 @@ public class AdminController {
     }
 
     @GetMapping("users/sorted")
-    public ResponseEntity<?> sortedUsers(@RequestParam String param) {
-        List<User> users = userService.getAllSorted(param);
+    public ResponseEntity<?> sortedUsers(@RequestParam(required = false) String param,
+                                         @RequestParam(required = false) Integer page) {
+        Page<User> users = userService.getAllSorted(param,page);
         return ResponseEntity.ok(users);
     }
 

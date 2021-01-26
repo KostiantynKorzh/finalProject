@@ -63,7 +63,6 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        System.out.println(authentication);
         String jwt = jwtUtils.generateToken(authentication);
 
 
@@ -82,11 +81,6 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest signupRequest) {
-//        if (userRepository.existsByEmail(signupRequest.getEmail())) {
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(new MessageResponse("Error: Email is already registered!"));
-//        }
 
         if (userService.checkIfExistsByEmail(signupRequest.getEmail())) {
             return ResponseEntity.badRequest()
@@ -103,8 +97,6 @@ public class AuthController {
 
         Set<String> strRoles = signupRequest.getRole();
         Set<Role> roles = new HashSet<>();
-        System.out.println(user);
-        System.out.println(RoleType.ROLE_USER);
 
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(RoleType.ROLE_USER)
@@ -126,7 +118,6 @@ public class AuthController {
             });
         }
 
-//        roles.add(roleRepository.findByName(RoleType.ROLE_ADMIN).get());
         user.setRoles(roles);
         userRepository.save(user);
 

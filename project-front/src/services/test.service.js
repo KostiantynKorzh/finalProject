@@ -15,7 +15,12 @@ const deleteTest = (testId) => {
     return axios.delete(API_URL + "delete/" + testId, {headers: authHeader()});
 }
 
+const getAllTessSorted=(param, page)=>{
+    return axios.get(API_URL+'sorted?param='+param+'&page='+page,{headers: authHeader()});
+}
+
 export default {
     getTests,
-    deleteTest
+    deleteTest,
+    getAllTessSorted
 }

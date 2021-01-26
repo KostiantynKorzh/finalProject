@@ -28,15 +28,15 @@ INSERT INTO testing_app_db.user_roles (user_id, role_id)
 VALUES (4, 3);
 
 INSERT INTO testing_app_db.tests (difficulty, subject, title, duration)
-VALUES ('HARD', 'MATH', 'First test', 45);
+VALUES (2, 'MATH', 'First test', 45);
 INSERT INTO testing_app_db.tests (difficulty, subject, title, duration)
-VALUES ('MEDIUM', 'MATH', 'Second test', 3);
+VALUES (1, 'MATH', 'Second test', 3);
 INSERT INTO testing_app_db.tests (difficulty, subject, title, duration)
-VALUES ('HARD', 'ENGLISH', 'Third test', 63);
+VALUES (2, 'ENGLISH', 'Third test', 63);
 INSERT INTO testing_app_db.tests (difficulty, subject, title, duration)
-VALUES ('EASY', 'MATH', 'Fourth test', 76);
+VALUES (0, 'MATH', 'Fourth test', 76);
 INSERT INTO testing_app_db.tests (difficulty, subject, title, duration)
-VALUES ('EASY', 'ENGLISH', 'Fifth test', 23);
+VALUES (0, 'ENGLISH', 'Fifth test', 23);
 
 INSERT INTO testing_app_db.required_tests (test_id, user_id)
 VALUES (2, 1);

@@ -80,7 +80,6 @@ const CreateTestQuestionCard = (props) => {
         const handleAddNewChild = () => {
             setCounter(counter => counter + 1);
             counterTemp++;
-            console.log("counterTemp", counterTemp);
             setDisabled(true);
             setAnswers(prev => [...prev, answer]);
             handleAddNew();
@@ -164,8 +163,6 @@ const CreateTestQuestionCard = (props) => {
     const handleNext = () => {
         postQuestion();
         console.log("NEXT = " + answers + ", " + questionText + ", correct = " + correctAnswer, "answers=", answersToSend);
-        // postQuestion();
-        // props.history.push('/admin');
         window.location.reload();
 
     }
@@ -180,7 +177,6 @@ const CreateTestQuestionCard = (props) => {
                 <Form.Control placeholder="Enter question"
                               onChange={(e) => handleChangeQuestionText(e)}/>
             </Card.Header>
-            {/*<ListGroup variant="flush">*/}
             <Card.Body>
                 <Form>
                     {numberOfAnswers.map(answer =>

@@ -57,8 +57,8 @@ const getUser = (id) => {
     return axios.get(API_URL_USER + id, {headers: authHeader()});
 };
 
-const getAllUsersSorted = (param) => {
-    return axios.get(API_URL + 'users/sorted?param=' + param, {headers: authHeader()});
+const getAllUsersSorted = (param, page) => {
+    return axios.get(API_URL + 'users/sorted?param=' + param + '&page=' + page, {headers: authHeader()});
 };
 
 export default {

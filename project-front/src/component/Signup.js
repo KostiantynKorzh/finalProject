@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Button, Form} from "react-bootstrap";
+import {Jumbotron, Button, Form} from "react-bootstrap";
 import {register} from "../redux/actions/auth"
 import {useDispatch, useSelector} from "react-redux";
 import validator from "validator";
@@ -33,6 +33,8 @@ const Signup = (props) => {
         if (!initialRender.current) {
             if (successful) {
                 window.alert(message);
+                props.history.push('/login');
+                window.location.reload();
             } else {
                 setEmailError(message);
             }
@@ -115,65 +117,67 @@ const Signup = (props) => {
     return (
         <div>
             <Header/>
-            <Form>
-                <Form.Group controlId="formFirstName">
-                    <Form.Label>First Name</Form.Label>
-                    <Form.Control type="text" name="firstName" placeholder="First Name"
-                                  onChange={onChangeFirstName}
-                                  isInvalid={!!firstNameError}
-                    />
-                    {firstNameError && (
-                        <Form.Control.Feedback type="invalid">
-                            {firstNameError}
-                        </Form.Control.Feedback>
-                    )}
-                </Form.Group>
+            <Jumbotron>
+                <Form>
+                    <Form.Group controlId="formFirstName">
+                        <Form.Label>First Name</Form.Label>
+                        <Form.Control type="text" name="firstName" placeholder="First Name"
+                                      onChange={onChangeFirstName}
+                                      isInvalid={!!firstNameError}
+                        />
+                        {firstNameError && (
+                            <Form.Control.Feedback type="invalid">
+                                {firstNameError}
+                            </Form.Control.Feedback>
+                        )}
+                    </Form.Group>
 
-                <Form.Group controlId="formLastName">
-                    <Form.Label>Last Name</Form.Label>
-                    <Form.Control type="text" name="lastName" placeholder="Last Name"
-                                  onChange={onChangeLastName}
-                                  isInvalid={!!lastNameError}
-                    />
-                    {lastNameError && (
-                        <Form.Control.Feedback type="invalid">
-                            {lastNameError}
-                        </Form.Control.Feedback>
-                    )}
-                </Form.Group>
+                    <Form.Group controlId="formLastName">
+                        <Form.Label>Last Name</Form.Label>
+                        <Form.Control type="text" name="lastName" placeholder="Last Name"
+                                      onChange={onChangeLastName}
+                                      isInvalid={!!lastNameError}
+                        />
+                        {lastNameError && (
+                            <Form.Control.Feedback type="invalid">
+                                {lastNameError}
+                            </Form.Control.Feedback>
+                        )}
+                    </Form.Group>
 
-                <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" name="email" placeholder="Enter email"
-                                  onChange={onChangeEmail}
-                                  isInvalid={!!emailError}
-                    />
-                    {emailError && (
-                        <Form.Control.Feedback type="invalid">
-                            {emailError}
-                        </Form.Control.Feedback>
-                    )}
-                </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control type="email" name="email" placeholder="Enter email"
+                                      onChange={onChangeEmail}
+                                      isInvalid={!!emailError}
+                        />
+                        {emailError && (
+                            <Form.Control.Feedback type="invalid">
+                                {emailError}
+                            </Form.Control.Feedback>
+                        )}
+                    </Form.Group>
 
-                <Form.Group controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" name="password" placeholder="Password"
-                                  isInvalid={!!passwordError}
-                                  onChange={onChangePassword}/>
-                    <Form.Control.Feedback type="invalid"/>
-                    {passwordError && (
-                        <Form.Control.Feedback type="invalid">
-                            {passwordError}
-                        </Form.Control.Feedback>
-                    )}
-                </Form.Group>
+                    <Form.Group controlId="formBasicPassword">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" name="password" placeholder="Password"
+                                      isInvalid={!!passwordError}
+                                      onChange={onChangePassword}/>
+                        <Form.Control.Feedback type="invalid"/>
+                        {passwordError && (
+                            <Form.Control.Feedback type="invalid">
+                                {passwordError}
+                            </Form.Control.Feedback>
+                        )}
+                    </Form.Group>
 
-                <Button variant="primary" type="submit"
-                        onClick={handleRegister}
-                >
-                    Register
-                </Button>
-            </Form>
+                    <Button variant="primary" type="submit"
+                            onClick={handleRegister}
+                    >
+                        Register
+                    </Button>
+                </Form>
+            </Jumbotron>
         </div>
     );
 }
