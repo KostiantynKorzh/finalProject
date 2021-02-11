@@ -1,5 +1,6 @@
 package me.project.SpringProject.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import me.project.SpringProject.langResponse.BoardUserResponse;
 import me.project.SpringProject.langResponse.HeaderLangResponse;
 import me.project.SpringProject.service.LangService;

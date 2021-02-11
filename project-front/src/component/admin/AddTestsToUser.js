@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
-import AdminService from "../services/admin.service";
+import AdminService from "../../services/admin.service";
 import {Jumbotron, Button, Table} from "react-bootstrap";
-import Header from "./Header";
+import Header from "../Header";
 
 const AddTestsToUser = (props) => {
 

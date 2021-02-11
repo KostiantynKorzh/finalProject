@@ -31,7 +31,6 @@ public class TestService {
     }
 
     public Page<Test> getAllSorted(String param, Integer page) {
-        Page<Test> tests;
         Sort sort;
         if (param == null || param.isEmpty()) {
             sort = Sort.by("id");
@@ -39,9 +38,11 @@ public class TestService {
             sort = Sort.by(param);
         }
         Pageable paging = PageRequest.of(page, 2, sort);
-//        tests = testRepository.findAll(sort);
-        tests = testRepository.findAll(paging);
-        return tests;
+        return testRepository.findAll(paging);
+    }
+
+    public List<Test> getAll() {
+        return testRepository.findAll();
     }
 
 }

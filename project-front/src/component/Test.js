@@ -51,8 +51,6 @@ const Test = (props) => {
         } else {
             setResults(prev => [...prev, ansObj]);
         }
-
-
     }
 
     useEffect(() => {
@@ -72,6 +70,8 @@ const Test = (props) => {
 
         setSubmitted(true);
 
+        console.log("results: ",results)
+
         results.map(ansObj => {
             if (ansObj.chosenAnswerId == ansObj.correctAnswerId) {
                 scoreTemp++;
@@ -81,20 +81,19 @@ const Test = (props) => {
         setCompleted(true);
 
         percentage = scoreTemp / results.length * 100;
-        console.log("temp", scoreTemp);
-        console.log("p", percentage)
         setScore(percentage);
     }
 
     useEffect(() => {
         UserService.getTest(user.id, props.match.params.testId).then(
             resp => {
+                console.log(resp);
                 setTest({
-                    title: resp.data.title,
-                    subject: resp.data.subject,
-                    difficulty: resp.data.difficulty,
+                    title: resp.data.test.title,
+                    subject: resp.data.test.subject,
+                    difficulty: resp.data.test.difficulty,
                     questions: resp.data.questions,
-                    duration: resp.data.duration
+                    duration: resp.data.test.duration
                 });
             }
         );
@@ -122,9 +121,9 @@ const Test = (props) => {
                         handleChangeInCard: handleChangeInCard
                     }}/>);
             })}
-            {/*{!completed &&*/}
-            <Button onClick={handleSubmitTest}>Submit</Button>
-            {/*}*/}
+            {!completed &&
+            <Button style={{width: '100%', marginBottom: '70px'}} onClick={handleSubmitTest}>Submit</Button>
+            }
             {score >= 0 &&
             <CompleteTest props={{
                 score: score,

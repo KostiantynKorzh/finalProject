@@ -49,6 +49,20 @@ const postQuestion = (question) => {
     }, {headers: authHeader()});
 };
 
+const postTest = (testId, test) => {
+    for (let i = 0; i < test.length; i++) {
+        axios.post(API_URL + 'createTest/' + testId + '/question', {
+            testId: testId,
+            questionText: test[i].questionText,
+            answers: test[i].answers
+        }, {headers: authHeader()}).then(
+            resp => {
+                console.log(resp.data);
+            }
+        );
+    }
+};
+
 const getAvailableTests = (id) => {
     return axios.get(API_URL_USER + id + "/tests/available", {headers: authHeader()});
 };
@@ -72,5 +86,6 @@ export default {
     postQuestion,
     getAvailableTests,
     getUser,
-    getAllUsersSorted
+    getAllUsersSorted,
+    postTest
 };

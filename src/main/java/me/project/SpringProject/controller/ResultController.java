@@ -28,7 +28,7 @@ public class ResultController {
     public ResponseEntity<?> postResult(@RequestBody AddResultRequest req) {
         System.out.println(req);
         return ResponseEntity.of(resultService.addResult(req.getUserId(),
-                req.getUserId(),
+                req.getTestId(),
                 req.getScore()));
     }
 

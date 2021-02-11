@@ -1,6 +1,5 @@
 package me.project.SpringProject.jwt;
 
-import me.project.SpringProject.userDetails.UserDetailsAuth;
 import me.project.SpringProject.userDetails.UserDetailsServiceAuth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     UserDetailsServiceAuth userDetailsService;
 
-    public static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
@@ -44,7 +43,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
             }
         } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e);
+            LOGGER.error("Cannot set user authentication: {}", e);
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }

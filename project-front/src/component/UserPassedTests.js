@@ -31,8 +31,8 @@ const UserPassedTests = (props) => {
         UserService.getPassedTests(props.match.params.id).then(
             (response) => {
                 setPassedTests(response.data);
+                console.log(response.data)
             });
-        // setNeedRefresh(false);
     }, [needRefresh]);
 
     const getContent = (lang) => {
@@ -54,16 +54,20 @@ const UserPassedTests = (props) => {
                     <thead>
                     <tr>
                         <th>Title</th>
-                        <th>Result</th>
+                        <th>Subject</th>
+                        <th>Difficulty</th>
+                        <th>Score</th>
+                        <th>Pass Time</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {passedTests.map(test =>
+                    {passedTests.map(result =>
                         <tr>
-                            <td>
-                                <div>{test.title}</div>
-                                <div>{test.result}</div>
-                            </td>
+                            <th>{result.title}</th>
+                            <th>{result.subject}</th>
+                            <th>{result.difficulty}</th>
+                            <th>{result.score}</th>
+                            <th>{result.passTimestamp}</th>
                         </tr>
                     )}
                     </tbody>

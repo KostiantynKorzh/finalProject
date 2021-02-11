@@ -55,7 +55,7 @@ const Timer = (props) => {
         }
 
         return (
-            <div>
+            <div className="fixed-bottom">
                 {/*<div>{seconds}</div>*/}
                 <ListGroup horizontal>
                     <ListGroup.Item>{minutes}</ListGroup.Item>

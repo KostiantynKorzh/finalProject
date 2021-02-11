@@ -1,5 +1,7 @@
 package me.project.SpringProject.controller;
 
+import me.project.SpringProject.dto.ResultDTO;
+import me.project.SpringProject.dto.TakeTestDTO;
 import me.project.SpringProject.entity.*;
 import me.project.SpringProject.repository.*;
 import me.project.SpringProject.request.AddTestRequest;
@@ -11,6 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,9 +61,17 @@ public class UserController {
     public ResponseEntity<?> getAllPassedTests(@PathVariable Long id) {
         User user = userRepository.findById(id).get();
         Set<Result> passedResults = resultRepository.findAllByUser(user);
-        Set<Test> passedTests = new HashSet<>();
-        passedResults.forEach(result -> passedTests.add(result.getTest()));
-        return ResponseEntity.ok(passedTests);
+        Set<ResultDTO> results = new HashSet<>();
+        passedResults.forEach(result -> results.add(
+                ResultDTO.builder()
+                        .title(result.getTest().getTitle())
+                        .subject(String.valueOf(result.getTest().getSubject()))
+                        .difficulty(String.valueOf(result.getTest().getDifficulty()))
+                        .score(result.getScore().intValue())
+                        .passTimestamp(new SimpleDateFormat("MM/dd/yyyy HH:mm").format(result.getPassTimestamp()))
+                        .build()
+        ));
+        return ResponseEntity.ok(results);
     }
 
     @GetMapping("/{id}/tests/available")
@@ -102,10 +114,12 @@ public class UserController {
 
     @GetMapping("/{id}/takeTest/{testId}")
     public ResponseEntity<?> getTest(@PathVariable Long id, @PathVariable Long testId) {
-        User user = userRepository.findById(id).get();
         Test test = testRepository.findById(testId).get();
-        RequiredTest requiredTest = requiredTestRepository.findByUserAndTest(user, test).get();
-        return ResponseEntity.ok(requiredTest.getTest());
+        Set<Question> questions = questionRepository.findAllByTest(test);
+        return ResponseEntity.ok(TakeTestDTO.builder()
+                .test(test)
+                .questions(questions)
+                .build());
     }
 
 }

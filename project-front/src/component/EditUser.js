@@ -38,11 +38,11 @@ const EditUser = (props) => {
 
     const validate = (firstName, lastName) => {
         let firstNameValid =
-            (firstName.length > 3 &&
+            (firstName.length >= 3 &&
                 firstName.match('^[a-zA-Zа-яА-ЯёъїґЇҐєЄіІ]+$'));
 
         let lastNameValid =
-            (lastName.length > 3 &&
+            (lastName.length >= 3 &&
                 lastName.match('^[a-zA-Zа-яА-ЯёъїґЇҐєЄіІ]+$'));
 
         console.log(firstNameValid);
@@ -97,9 +97,9 @@ const EditUser = (props) => {
                                 if (validate(firstName, lastName)) {
                                     user.firstName = firstName;
                                     user.lastName = lastName;
-                                    // AdminService.updateUser(props.match.params.id, user);
-                                    // props.history.push('/admin/users');
-                                    // window.location.reload();
+                                    AdminService.updateUser(props.match.params.id, user);
+                                    props.history.push('/admin/users');
+                                    window.location.reload();
                                 } else {
                                     console.log("NON VALID");
                                     console.log(firstNameError);

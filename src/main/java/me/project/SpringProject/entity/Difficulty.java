@@ -1,6 +1,6 @@
 package me.project.SpringProject.entity;
 
-public enum Difficulties {
+public enum Difficulty {
 
     EASY, MEDIUM, HARD
 

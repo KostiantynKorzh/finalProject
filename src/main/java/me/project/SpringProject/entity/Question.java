@@ -34,7 +34,9 @@ public class Question {
     private Test test;
 
     @OneToMany(mappedBy = "question",
-            fetch = FetchType.EAGER)
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.REMOVE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Answer> answers;
 
 

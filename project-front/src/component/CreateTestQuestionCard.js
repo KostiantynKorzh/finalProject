@@ -12,20 +12,20 @@ import {
     InputGroup,
     FormControl
 } from "react-bootstrap";
+import {login} from "../redux/actions/auth";
 
 const CreateTestQuestionCard = (props) => {
 
     const [numberOfAnswers, setNumberOfAnswers] = useState([]);
-    const [counter, setCounter] = useState(0);
     const [answers, setAnswers] = useState([]);
     const [questionText, setQuestionText] = useState("");
-    const [correctAnswer, setCorrectAnswer] = useState("");
     const [submit, setSubmit] = useState(false);
     const [nextOrFinish, setNextOrFinish] = useState(false);
     const [initial, setInitial] = useState(true);
 
-    let counterTemp = 0;
+    const [createdQuestion, setCreatedQuestion] = useState(props.createdQuestions);
 
+    let counterTemp = 0;
 
     const childRef = useRef();
 
@@ -65,54 +65,65 @@ const CreateTestQuestionCard = (props) => {
 
     const NewAnswer = forwardRef((props, ref) => {
 
-        const [answer, setAnswer] = useState("");
+        const [answer, setAnswer] = useState(null);
+        const [answerText, setAnswerText] = useState("");
+        const [correct, setCorrect] = useState(false);
+
         const [disabled, setDisabled] = useState(false);
+
 
         useImperativeHandle(ref, () => ({
             submitOnChild() {
                 counterTemp++;
                 setDisabled(true);
-                setAnswers(prev => [...prev, answer]);
+                setAnswer({
+                    answerText: answerText,
+                    correct: correct
+                })
+                if (answer != null) {
+                    setAnswers(prev => [...prev, answer]);
+                }
             }
         }));
 
+        useEffect(() => {
+            if (answer != null) {
+                setAnswers(prev => [...prev, answer]);
+            }
+        }, [answer])
 
         const handleAddNewChild = () => {
-            setCounter(counter => counter + 1);
+            // setCounter(counter => counter + 1);
             counterTemp++;
             setDisabled(true);
-            setAnswers(prev => [...prev, answer]);
+            setAnswer({
+                answerText: answerText,
+                correct: correct
+            })
+
             handleAddNew();
         };
-
-        const handleSubmitChild = () => {
-            setDisabled(true);
-            setAnswers(prev => [...prev, answer]);
-        };
-
-        const handleChange = (e) => {
-            setAnswer(e.target.value);
-        }
 
         return (
             <div>
                 <Row style={{margin: "20px"}}>
                     <Col xs={1}>
                         <Form.Check
-                            type="radio"
-                            // label={answer.answerText}
+                            type="checkbox"
                             name="answerRadioButtons"
                             id={counterTemp}
                             onChange={(e) => {
+                                console.log(e.target);
                                 console.log(e.target.id);
-                                setCorrectAnswer(e.target.id);
+                                setCorrect(!correct);
+                                console.log(correct);
                             }}
                         />
                     </Col>
                     <Col xs={9}>
                         <Form.Control placeholder="Enter answer"
                                       onChange={(e) => {
-                                          handleChange(e);
+                                          setAnswerText(e.target.value);
                                       }}
                                       disabled={disabled}
                         />
@@ -128,54 +139,60 @@ const CreateTestQuestionCard = (props) => {
     })
 
     const postQuestion = () => {
-
-        for (let i = 0; i < answers.length; i++) {
-            answersToSend[i] = {
-                answerText: answers[i],
-                correct: false
-            }
-            if (i == correctAnswer - 1) {
-                answersToSend[i].correct = true;
-            }
-        }
-
-        console.log(props.testId, questionText, answersToSend);
-
-        const question = {
-            testId: props.testId,
-            questionText: questionText,
-            answers: answersToSend,
-        };
-
-        AdminService.postQuestion(question).then(
-            resp => {
-                console.log(resp.data);
-            }
-        );
-        return Promise.resolve();
+        AdminService.postTest(props.testId, createdQuestion);
     }
-
-    let answersToSend = [{
-        answerText: "",
-        correct: false
-    }];
 
     const handleNext = () => {
-        postQuestion();
-        console.log("NEXT = " + answers + ", " + questionText + ", correct = " + correctAnswer, "answers=", answersToSend);
-        window.location.reload();
-
+        const question = {
+            questionText: questionText,
+            answers: answers
+        };
+        setCreatedQuestion(prev => [...prev, question]);
+        clearAll();
     }
 
-    const handleChangeQuestionText = (e) => {
-        setQuestionText(e.target.value);
+    const clearAll = () => {
+        setNumberOfAnswers([]);
+        // setCounter(0);
+        setAnswers([]);
+        setQuestionText("");
+        // setCorrectAnswer(new Set());
+        setSubmit(false);
+        setNextOrFinish(false);
+        setInitial(true);
     }
+
+    const [finished, setFinished] = useState(false);
+    const [ready, setReady] = useState(false);
+
+    useEffect(() => {
+        if (finished) {
+            setFinished(false);
+            const question = {
+                questionText: questionText,
+                answers: answers
+            };
+            setCreatedQuestion(prev => [...prev, question]);
+            setReady(true);
+        }
+    }, [finished])
+
+    useEffect(() => {
+        if (ready) {
+            postQuestion();
+            props.history.push("/admin/tests");
+            window.location.reload();
+        }
+    }, [createdQuestion])
 
     return (
         <Card>
             <Card.Header>
                 <Form.Control placeholder="Enter question"
-                              onChange={(e) => handleChangeQuestionText(e)}/>
+                              value={questionText}
+                              onChange={(e) => {
+                                  setQuestionText(e.target.value)
+                              }}/>
             </Card.Header>
             <Card.Body>
                 <Form>
@@ -187,18 +204,12 @@ const CreateTestQuestionCard = (props) => {
             {!nextOrFinish &&
             <Button
                 onClick={(e) => handleSubmit(e)}
-            >Submit</Button>}
+            >Submit</Button>
+            }
             {nextOrFinish &&
             <div>
                 <Button onClick={() => handleNext()}>Next</Button>
-                <Button onClick={() => {
-                    postQuestion().then(() => {
-                            props.history.push('/admin/tests');
-                            window.location.reload();
-                        }
-                    );
-
-                }}>Finish</Button>
+                <Button onClick={() => setFinished(true)}>Finish</Button>
             </div>}
         </Card>
     );

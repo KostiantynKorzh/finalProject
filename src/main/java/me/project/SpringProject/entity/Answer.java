@@ -25,7 +25,7 @@ public class Answer {
     private String answerText;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "question_id")
     private Question question;
 

@@ -1,8 +1,8 @@
 import React, {useRef, useState} from 'react';
 import {Button, Container, Form} from "react-bootstrap";
-import {Redirect} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {login} from "../redux/actions/auth";
+import Header from "./Header";
 
 const Login = (props) => {
 
@@ -51,25 +51,28 @@ const Login = (props) => {
     // }
 
     return (
-        <Container>
-            <Form>
-                <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email"
-                                  onChange={onChangeEmail}/>
-                </Form.Group>
+        <div>
+            <Header/>
+            <Container>
+                <Form className="m-4">
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control type="email" placeholder="Enter email"
+                                      onChange={onChangeEmail}/>
+                    </Form.Group>
 
-                <Form.Group controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password"
-                                  onChange={onChangePassword}/>
-                </Form.Group>
-                <Button variant="primary" type="submit"
-                        onClick={handleLogin}>
-                    Submit
-                </Button>
-            </Form>
-        </Container>
+                    <Form.Group controlId="formBasicPassword">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" placeholder="Password"
+                                      onChange={onChangePassword}/>
+                    </Form.Group>
+                    <Button variant="primary" type="submit"
+                            onClick={handleLogin}>
+                        Submit
+                    </Button>
+                </Form>
+            </Container>
+        </div>
     );
 }
 

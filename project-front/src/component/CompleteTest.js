@@ -9,7 +9,6 @@ const CompleteTest = ({props}) => {
 
     useEffect(() => {
 
-        console.log(props);
         setRes(props.score);
         UserService.addResult(props.userId, props.testId, props.score).then(
             (resp) => {

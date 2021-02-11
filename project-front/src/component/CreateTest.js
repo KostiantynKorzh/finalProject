@@ -8,6 +8,8 @@ const CreateTest = (props) => {
 
     const [testId, setTestId] = useState(0);
 
+    const [createdQuestion, setCreatedQuestion] = useState([]);
+
     const [testToFill, setTestToFill] = useState({
         title: "",
         subject: "",
@@ -36,7 +38,10 @@ const CreateTest = (props) => {
                 <h3>Subject: {testToFill.subject}</h3>
                 <h3>Difficulty: {testToFill.difficulty}</h3>
                 <h3>Duration: {testToFill.duration}</h3>
-                <CreateTestQuestionCard testId={testId} history={props.history}/>
+                <CreateTestQuestionCard testId={testId}
+                                        history={props.history}
+                                        createdQuestions={createdQuestion}
+                />
             </Jumbotron>
         </div>
     );

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import AdminService from "../services/admin.service";
-import Header from "./Header";
+import AdminService from "../../services/admin.service";
+import Header from "../Header";
 import {Jumbotron, Dropdown, Table, Pagination} from "react-bootstrap";
 
 const AdminUsers = (props) => {
@@ -50,7 +50,7 @@ const AdminUsers = (props) => {
     const fetchUsers = (param, page) => {
         AdminService.getAllUsersSorted(param, page).then(
             resp => {
-                console.log(resp.data);
+                // console.log(resp.data);
                 setUsers(resp.data.content);
                 setCurrentPage(resp.data.number);
                 setSizePage(resp.data.totalPages);
@@ -85,9 +85,9 @@ const AdminUsers = (props) => {
                                         window.location.reload();
                                     }}
                                 >Edit</Dropdown.Item>
-                                <Dropdown.Item
-                                    // onClick={() => handleEdit(user)}
-                                >Block</Dropdown.Item>
+                                {/*<Dropdown.Item*/}
+                                {/*    // onClick={() => handleEdit(user)}*/}
+                                {/*>Block</Dropdown.Item>*/}
                                 <Dropdown.Item
                                     onClick={() => {
                                         AdminService.deleteUser(user.id).then(

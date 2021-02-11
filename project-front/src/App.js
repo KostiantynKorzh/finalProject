@@ -13,13 +13,12 @@ import Test from "./component/Test";
 import CreateTestInit from "./component/CreateTestInit";
 import Profile from "./component/Profile";
 import CreateTest from "./component/CreateTest";
-import AdminUsers from "./component/AdminUsers";
-import AddTestsToUser from "./component/AddTestsToUser";
+import AdminUsers from "./component/admin/AdminUsers";
+import AddTestsToUser from "./component/admin/AddTestsToUser";
 import EditUser from "./component/EditUser";
-import AdminTests from "./component/AdminTests";
+import AdminTests from "./component/admin/AdminTests";
 import UserPassedTests from "./component/UserPassedTests";
 import UserRequiredTests from "./component/UserRequiredTests";
-import EditTest from "./component/EditTest";
 
 function App() {
 
@@ -65,7 +64,6 @@ function App() {
                 <Route exact path="/admin/:id/addTests" component={AddTestsToUser}/>
                 <Route exact path="/admin/editUser/:id" component={EditUser}/>
                 <Route exact path="/admin/tests" component={AdminTests}/>
-                <Route exact path="/admin/editTest/:id" component={EditTest}/>
 
                 <Route exact path="/admin/createTest" component={CreateTestInit}/>
                 <Route exact path="/admin/createTest/:id" component={CreateTest}/>

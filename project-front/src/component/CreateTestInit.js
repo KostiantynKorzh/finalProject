@@ -32,7 +32,6 @@ const CreateTestInit = (props) => {
 
         AdminService.createTest(newTest).then(
             resp => {
-                console.log(resp.data);
                 props.history.push("/admin/createTest/" + resp.data.id);
                 window.location.reload();
             }

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Jumbotron, Button, Form} from "react-bootstrap";
+import {Jumbotron, Button, Form, Container} from "react-bootstrap";
 import {register} from "../redux/actions/auth"
 import {useDispatch, useSelector} from "react-redux";
 import validator from "validator";
@@ -103,10 +103,7 @@ const Signup = (props) => {
                 }
             )
                 .catch((error) => {
-                    // console.log("message: ", message)
                     setErrorMessage(error)
-                    // window.alert(error);
-                    // console.log("error: ", error)
                     setSuccessful(false);
                 });
         }
@@ -117,8 +114,8 @@ const Signup = (props) => {
     return (
         <div>
             <Header/>
-            <Jumbotron>
-                <Form>
+            <Container>
+                <Form className="m-4">
                     <Form.Group controlId="formFirstName">
                         <Form.Label>First Name</Form.Label>
                         <Form.Control type="text" name="firstName" placeholder="First Name"
@@ -177,7 +174,7 @@ const Signup = (props) => {
                         Register
                     </Button>
                 </Form>
-            </Jumbotron>
+            </Container>
         </div>
     );
 }

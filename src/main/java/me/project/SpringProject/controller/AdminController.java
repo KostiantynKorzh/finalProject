@@ -15,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -98,7 +97,7 @@ public class AdminController {
         Test test = Test.builder()
                 .title(req.getTitle())
                 .subject(Subjects.valueOf(req.getSubject()))
-                .difficulty(Difficulties.valueOf(req.getDifficulty()))
+                .difficulty(Difficulty.valueOf(req.getDifficulty()))
                 .duration(req.getDuration())
                 .created(new Date(System.currentTimeMillis()))
                 .build();
@@ -119,7 +118,7 @@ public class AdminController {
 
         Question question = Question.builder()
                 .questionText(req.getQuestionText())
-//                .test(test)
+                .test(test)
                 .build();
         questionRepository.save(question);
 

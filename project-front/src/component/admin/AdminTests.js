@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
-import Header from "./Header";
+import Header from "../Header";
 import {Pagination, Dropdown, Jumbotron, Table} from "react-bootstrap";
-import TestService from "../services/test.service";
-import Test from "./Test";
+import TestService from "../../services/test.service";
+import Test from "../Test";
 
 const AdminTests = (props) => {
 
@@ -80,12 +80,6 @@ const AdminTests = (props) => {
                                 More
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Dropdown.Item
-                                    onClick={() => {
-                                        props.history.push('/admin/editTest/' + test.id);
-                                        window.location.reload();
-                                    }}
-                                >Edit</Dropdown.Item>
                                 <Dropdown.Item
                                     onClick={() => {
                                         TestService.deleteTest(test.id).then(

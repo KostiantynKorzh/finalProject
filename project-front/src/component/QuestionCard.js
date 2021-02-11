@@ -19,7 +19,7 @@ const QuestionCard = ({props}) => {
     }
 
     return (
-        <div>
+        <div className="m-4">
             <Card>
                 <Card.Header>
                     {props.numberOfQuestion}

@@ -1,3 +1,105 @@
+create table roles
+(
+    id   bigint auto_increment
+        primary key,
+    name varchar(20) null
+);
+
+create table tests
+(
+    id         bigint auto_increment
+        primary key,
+    created    datetime     null,
+    difficulty int          not null,
+    duration   int          not null,
+    subject    varchar(255) not null,
+    title      varchar(255) null,
+    constraint UK_m8r0mdwal61kks84anyptqq28
+        unique (title)
+);
+
+create table questions
+(
+    id            bigint auto_increment
+        primary key,
+    question_text varchar(255) not null,
+    test_id       bigint       null,
+    constraint FKoc6xkgj16nhyyes4ath9dyxxw
+        foreign key (test_id)
+        references tests (id)
+            on delete cascade
+);
+
+create table answers
+(
+    id          bigint auto_increment
+        primary key,
+    answer_text varchar(255) not null,
+    is_correct  bit          not null,
+    question_id bigint       null,
+    constraint FK3erw1a3t0r78st8ty27x6v3g1
+        foreign key (question_id) references questions (id)  on delete cascade
+);
+
+create table users
+(
+    id         bigint auto_increment
+        primary key,
+    created    datetime     null,
+    email      varchar(20)  not null,
+    first_name varchar(20)  not null,
+    last_name  varchar(20)  not null,
+    password   varchar(255) not null,
+    constraint UK6dotkott2kjsp8vw4d0m25fb7
+        unique (email)
+);
+
+create table required_tests
+(
+    id      bigint auto_increment
+        primary key,
+    test_id bigint null,
+    user_id bigint null,
+    constraint FKa2d5crry0vxss2gmrkhspbxdq
+        foreign key (test_id) references tests (id)
+            on delete cascade,
+    constraint FKopf3csrsfeuw6l758v1qlefi9
+        foreign key (user_id) references users (id)
+            on delete cascade
+);
+
+create table results
+(
+    id             bigint auto_increment
+        primary key,
+    pass_timestamp datetime not null,
+    score          double   not null,
+    test_id        bigint   null,
+    user_id        bigint   null,
+    constraint FKxtl9ahma532if6r68yvgo7ck
+        foreign key (user_id)
+        references users (id)
+        on update cascade
+        on delete cascade,
+        constraint FKe9uvk96os1lxpp8pf93p13lmv
+        foreign key (test_id)
+        references tests (id)
+        on delete cascade
+);
+
+create table user_roles
+(
+    user_id bigint not null,
+    role_id bigint not null,
+    primary key (user_id, role_id),
+    constraint FKh8ciramu9cc9q3qcqiv4ue8a6
+        foreign key (role_id) references roles (id),
+    constraint FKhfh9dx7w3ubf1co1vdev94g3f
+        foreign key (user_id) references users (id)
+            on delete cascade
+);
+
+
 INSERT INTO testing_app_db.roles (id, name)
 VALUES (1, 'ROLE_USER');
 INSERT INTO testing_app_db.roles (id, name)
@@ -17,9 +119,6 @@ INSERT INTO testing_app_db.users (email, first_name, last_name, password, create
 VALUES ('lina@kostenko.com', 'Ліна', 'Костенко', 'password', NOW());
 INSERT INTO testing_app_db.users (email, first_name, last_name, password, created)
 VALUES ('arthur@doyle.com', 'Arthur', 'Doyle', 'password', NOW());
-INSERT INTO testing_app_db.users (email, first_name, last_name, password, created)
-VALUES ('admin@is.me', 'admin', 'admin', '$2a$10$8qI/GBBEVpljjVUaKI.G7ewKdIkJmI4hD3e3a.MpluePgikPyBWNa', NOW());
-
 
 INSERT INTO testing_app_db.user_roles (user_id, role_id)
 VALUES (1, 1);
@@ -33,8 +132,6 @@ INSERT INTO testing_app_db.user_roles (user_id, role_id)
 VALUES (5, 1);
 INSERT INTO testing_app_db.user_roles (user_id, role_id)
 VALUES (6, 1);
-INSERT INTO testing_app_db.user_roles (user_id, role_id)
-VALUES (7, 3);
 
 INSERT INTO testing_app_db.tests (difficulty, subject, title, duration, created)
 VALUES (2, 'MATH', 'Complex Math', 45, NOW());
