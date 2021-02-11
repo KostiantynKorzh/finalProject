@@ -70,8 +70,6 @@ const Test = (props) => {
 
         setSubmitted(true);
 
-        console.log("results: ",results)
-
         results.map(ansObj => {
             if (ansObj.chosenAnswerId == ansObj.correctAnswerId) {
                 scoreTemp++;
@@ -79,7 +77,6 @@ const Test = (props) => {
         });
 
         setCompleted(true);
-
         percentage = scoreTemp / results.length * 100;
         setScore(percentage);
     }
@@ -97,16 +94,25 @@ const Test = (props) => {
                 });
             }
         );
-
+// window.addEventListener('beforeunload',  props.handleSubmitTest())
+        window.addEventListener('beforeunload', (e) => {
+            handleSubmitTest();
+        });
+        return () => {
+            // window.removeEventListener('beforeunload',  props.handleSubmitTest())
+            window.removeEventListener('beforeunload', (e) => {
+                handleSubmitTest();
+            });
+        }
     }, [])
 
     let count = 0;
 
     return (
         <div>
-            {completed &&
+            {/*{completed &&*/}
             <Header/>
-            }
+            {/*}*/}
             <div>TEST</div>
             <div>{test.title}</div>
             {!completed &&
@@ -142,6 +148,7 @@ const Test = (props) => {
                 <Timer
                     time={test.duration}
                     props={props}
+                    handleSubmitTest={handleSubmitTest}
                 />}
             </div>
         </div>

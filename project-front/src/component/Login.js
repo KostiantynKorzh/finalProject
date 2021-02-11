@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button, Container, Form} from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
 import {login} from "../redux/actions/auth";
@@ -25,6 +25,12 @@ const Login = (props) => {
         setPassword(password);
     };
 
+    useEffect(() => {
+        if (message != null) {
+            alert(message);
+        }
+    }, [message])
+
     const handleLogin = (e) => {
         e.preventDefault();
 
@@ -39,6 +45,9 @@ const Login = (props) => {
                 window.location.reload();
             })
             .catch(() => {
+                if (message != null) {
+                    alert(message);
+                }
                 setLoading(false);
             });
         // } else {
@@ -58,7 +67,8 @@ const Login = (props) => {
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Email address</Form.Label>
                         <Form.Control type="email" placeholder="Enter email"
-                                      onChange={onChangeEmail}/>
+                                      onChange={onChangeEmail}
+                        />
                     </Form.Group>
 
                     <Form.Group controlId="formBasicPassword">

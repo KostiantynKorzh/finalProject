@@ -24,7 +24,6 @@ const Home = () => {
                 setContent(_content[0]);
             }
         )
-        console.log(user);
     }, [])
 
     return (

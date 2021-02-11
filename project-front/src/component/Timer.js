@@ -30,7 +30,7 @@ const Timer = (props) => {
                 };
             } else {
                 setOver(true);
-            };
+            }
 
 
         }, [seconds])
@@ -38,9 +38,9 @@ const Timer = (props) => {
         useEffect(() => {
             if (over) {
                 window.alert("Time is up");
-                console.log(props);
-                props.props.history.push('/home');
-                window.location.reload();
+                props.handleSubmitTest();
+                // props.props.history.push('/home');
+                // window.location.reload();
             }
         }, [over])
 

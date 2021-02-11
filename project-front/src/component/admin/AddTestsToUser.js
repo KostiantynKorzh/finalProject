@@ -13,23 +13,24 @@ const AddTestsToUser = (props) => {
         getTests();
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         getTests();
-    },[added]);
+    }, [added]);
 
     const getTests = () => {
         AdminService.getAvailableTests(props.match.params.id).then(
             resp => {
-                console.log(resp.data);
                 setTests(resp.data)
             });
         setAdded(false);
     };
 
     const handleAddOneTest = (e, testId) => {
-        AdminService.addOneTestToUser(props.match.params.id, testId);
-        setAdded(true)
-        getTests();
+        AdminService.addOneTestToUser(props.match.params.id, testId)
+            .then(() => {
+                setAdded(true)
+                getTests();
+            });
     }
 
     return (
