@@ -15,8 +15,6 @@ const Header = (props) => {
 
     const {user: currentUser} = useSelector((state) => state.auth);
 
-    // const [langTemp, setLangTemp] = useState("");
-
     const lang = localStorage.getItem('lang');
 
     const [content, setContent] = useState({
@@ -35,17 +33,12 @@ const Header = (props) => {
         requiredTests: ""
     });
 
-    // useEffect(() => {
-    //     getContentLang(lang);
-    //     console.log("Here")
-    // }, [langTemp]);
-
     useEffect(() => {
         getContentLang(lang);
     }, []);
 
     const getContentLang = (lang) => {
-        LangService.getContentHeader(lang).then(
+        LangService.getContent(lang).then(
             resp => {
                 setContent({
                     home: resp.data.home,

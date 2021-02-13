@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {Button} from "react-bootstrap";
 import AdminService from '../services/admin.service';
+import LangService from "../services/lang.service";
 
 const Welcome = () => {
 
@@ -11,7 +12,23 @@ const Welcome = () => {
 
     const [loaded, setLoaded] = useState(false);
 
+    const [content, setContent] = useState({
+        welcome: '',
+        hi: '',
+        welcomeChoosy: '',
+        login: '',
+        signup: '',
+        myTests: '',
+        myProfile: '',
+        users: '',
+        tests: '',
+        or: ''
+    });
+
+    const lang = localStorage.getItem('lang');
+
     useEffect(() => {
+        getContentLang(lang);
         if (currentUser) {
             AdminService.getUser(currentUser.id).then(
                 resp => {
@@ -20,6 +37,26 @@ const Welcome = () => {
             )
         }
     }, []);
+
+
+    const getContentLang = (lang) => {
+        LangService.getContent(lang).then(
+            resp => {
+                setContent({
+                    welcome: resp.data.welcome,
+                    hi: resp.data.hi,
+                    welcomeChoosy: resp.data.welcomeChoosy,
+                    login: resp.data.login,
+                    signup: resp.data.signup,
+                    myTests: resp.data.tests,
+                    myProfile: resp.data.profile,
+                    users: resp.data.users,
+                    tests: resp.data.tests,
+                    or: resp.data.or
+                });
+            }
+        );
+    };
 
     useEffect(() => {
         setLoaded(true);
@@ -33,7 +70,7 @@ const Welcome = () => {
                         href={props.firstButtonLink}
                         style={{marginBottom: '3%'}}
                 >{props.firstButton}</Button>
-                <div style={{fontSize: '200%'}}>or</div>
+                <div style={{fontSize: '200%'}}>{content.or}</div>
                 <Button className="auth-buttons"
                         href={props.secondButtonLink}
                 >{props.secondButton}</Button>
@@ -44,10 +81,10 @@ const Welcome = () => {
     const GuestWelcome = () => {
         return (
             <WelcomeWindow props={{
-                welcome: 'Welcome to Choosy',
-                firstButton: 'Login',
+                welcome: `${content.welcomeChoosy}`,
+                firstButton: `${content.login}`,
                 firstButtonLink: '/login',
-                secondButton: 'Signup',
+                secondButton: `${content.signup}`,
                 secondButtonLink: '/signup'
             }}/>
         );
@@ -56,10 +93,10 @@ const Welcome = () => {
     const UserWelcome = () => {
         return (
             <WelcomeWindow props={{
-                welcome: `Welcome, ${name}`,
-                firstButton: 'My Tests',
+                welcome: `${content.welcome}, ${name}`,
+                firstButton: `${content.myTests}`,
                 firstButtonLink: `/user/${currentUser.id}/requiredTests`,
-                secondButton: 'My Profile',
+                secondButton: `${content.myProfile}`,
                 secondButtonLink: '/profile'
             }}/>
         );
@@ -68,10 +105,10 @@ const Welcome = () => {
     const AdminWelcome = () => {
         return (
             <WelcomeWindow props={{
-                welcome: `Hi, ${name}`,
-                firstButton: 'Users',
+                welcome: `${content.hi}, ${name}`,
+                firstButton: `${content.users}`,
                 firstButtonLink: `/admin/users`,
-                secondButton: 'All Tests',
+                secondButton: `${content.tests}`,
                 secondButtonLink: '/admin/tests'
             }}/>
         );

@@ -1,8 +1,6 @@
 package me.project.SpringProject.controller;
 
-import lombok.extern.slf4j.Slf4j;
-import me.project.SpringProject.langResponse.BoardUserResponse;
-import me.project.SpringProject.langResponse.HeaderLangResponse;
+import me.project.SpringProject.lang.BoardUserResponse;
 import me.project.SpringProject.service.LangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,22 +18,10 @@ public class LangController {
         this.langService = langService;
     }
 
-    @GetMapping("/header")
-    public ResponseEntity<?> getContentHeader() {
+    @GetMapping
+    public ResponseEntity<?> getContent() {
         return ResponseEntity.ok(
-                langService.getHeaderContent()
-        );
-    }
-
-    @GetMapping("/boardUser")
-    public ResponseEntity<?> getContentBoardUser() {
-        return ResponseEntity.ok(BoardUserResponse.builder()
-                .passedTests(Translator.toLocale("boardUser.passedTests"))
-                .requiredTests(Translator.toLocale("boardUser.requiredTests"))
-                .pass(Translator.toLocale("boardUser.pass"))
-                .take(Translator.toLocale("boardUser.take"))
-                .build()
-        );
+                langService.getContent());
     }
 
 }

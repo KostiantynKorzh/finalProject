@@ -1,4 +1,4 @@
-package me.project.SpringProject.langResponse;
+package me.project.SpringProject.lang;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

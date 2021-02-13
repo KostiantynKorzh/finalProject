@@ -12,8 +12,8 @@ const langAndAuthHeader = (lang) => {
     }
 };
 
-const getContentHeader = (lang) => {
-    return axios.get(API_URL_LANG + "header", {
+const getContent = (lang) => {
+    return axios.get(API_URL_LANG, {
         headers: langAndAuthHeader(lang),
     });
 };
@@ -25,6 +25,6 @@ const getContentUserPassedTests = (lang) => {
 };
 
 export default {
-    getContentHeader,
+    getContent,
     getContentUserPassedTests
 }

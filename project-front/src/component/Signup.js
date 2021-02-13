@@ -3,8 +3,8 @@ import {Jumbotron, Button, Form, Container} from "react-bootstrap";
 import {register} from "../redux/actions/auth"
 import {useDispatch, useSelector} from "react-redux";
 import validator from "validator";
-import {setMessage} from "../redux/actions/message";
 import Header from "./Header";
+import LangService from "../services/lang.service";
 
 const Signup = (props) => {
 
@@ -28,6 +28,34 @@ const Signup = (props) => {
     const dispatch = useDispatch();
 
     const initialRender = useRef(true);
+
+    const lang = localStorage.getItem('lang');
+
+    const [content, setContent] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        signup: ''
+    })
+
+    useEffect(() => {
+        getContentLang(lang);
+    }, [])
+
+    const getContentLang = (lang) => {
+        LangService.getContent(lang).then(
+            resp => {
+                setContent({
+                    firstName: resp.data.firstName,
+                    lastName: resp.data.lastName,
+                    email: resp.data.email,
+                    password: resp.data.password,
+                    signup: resp.data.submit
+                });
+            }
+        );
+    };
 
     useEffect(() => {
         if (!initialRender.current) {
@@ -65,13 +93,15 @@ const Signup = (props) => {
 
     const validate = (firstName, lastName, email, password) => {
         let containsProblem = true;
-        if (!validator.isAlpha(firstName)) {
+        if (!validator.isAlpha(firstName, 'uk-UA') &&
+            !validator.isAlpha(firstName)) {
             setFirstNameError("Invalid first name");
             containsProblem = false;
         } else {
             setFirstNameError(null);
         }
-        if (!validator.isAlpha(lastName)) {
+        if (!validator.isAlpha(lastName, 'uk-UA') &&
+            !validator.isAlpha(lastName)) {
             setLastFirstNameError("Invalid last name");
             containsProblem = false;
         } else {
@@ -117,8 +147,8 @@ const Signup = (props) => {
             <Container>
                 <Form className="m-4">
                     <Form.Group controlId="formFirstName">
-                        <Form.Label>First Name</Form.Label>
-                        <Form.Control type="text" name="firstName" placeholder="First Name"
+                        <Form.Label>{content.firstName}</Form.Label>
+                        <Form.Control type="text" name="firstName" placeholder={content.firstName}
                                       onChange={onChangeFirstName}
                                       isInvalid={!!firstNameError}
                         />
@@ -130,8 +160,8 @@ const Signup = (props) => {
                     </Form.Group>
 
                     <Form.Group controlId="formLastName">
-                        <Form.Label>Last Name</Form.Label>
-                        <Form.Control type="text" name="lastName" placeholder="Last Name"
+                        <Form.Label>{content.lastName}</Form.Label>
+                        <Form.Control type="text" name="lastName" placeholder={content.lastName}
                                       onChange={onChangeLastName}
                                       isInvalid={!!lastNameError}
                         />
@@ -143,8 +173,8 @@ const Signup = (props) => {
                     </Form.Group>
 
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Email address</Form.Label>
-                        <Form.Control type="email" name="email" placeholder="Enter email"
+                        <Form.Label>{content.email}</Form.Label>
+                        <Form.Control type="email" name="email" placeholder={content.email}
                                       onChange={onChangeEmail}
                                       isInvalid={!!emailError}
                         />
@@ -156,8 +186,8 @@ const Signup = (props) => {
                     </Form.Group>
 
                     <Form.Group controlId="formBasicPassword">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" name="password" placeholder="Password"
+                        <Form.Label>{content.password}</Form.Label>
+                        <Form.Control type="password" name="password" placeholder={content.password}
                                       isInvalid={!!passwordError}
                                       onChange={onChangePassword}/>
                         <Form.Control.Feedback type="invalid"/>
@@ -171,7 +201,7 @@ const Signup = (props) => {
                     <Button variant="primary" type="submit"
                             onClick={handleRegister}
                     >
-                        Register
+                        {content.signup}
                     </Button>
                 </Form>
             </Container>
