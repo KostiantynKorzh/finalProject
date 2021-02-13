@@ -1,10 +1,16 @@
 package me.project.SpringProject.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import me.project.SpringProject.dto.ResultDTO;
 import me.project.SpringProject.dto.TakeTestDTO;
 import me.project.SpringProject.entity.*;
+import me.project.SpringProject.exception.NoSuchUserException;
 import me.project.SpringProject.repository.*;
 import me.project.SpringProject.request.AddTestRequest;
+import me.project.SpringProject.response.MessageResponse;
+import me.project.SpringProject.service.ResultService;
+import me.project.SpringProject.service.TestService;
+import me.project.SpringProject.service.UserService;
 import me.project.SpringProject.userDetails.UserDetailsAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -19,37 +25,31 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
+    UserService userService;
 
     @Autowired
-    QuestionRepository questionRepository;
+    TestService testService;
 
     @Autowired
-    RequiredTestRepository requiredTestRepository;
+    ResultService resultService;
 
-    @Autowired
-    TestRepository testRepository;
-
-    @Autowired
-    ResultRepository resultRepository;
-
-//    @GetMapping
-//    public ResponseEntity<?> getUser(Authentication authentication) {
-//        UserDetailsAuth userPrincipal = (UserDetailsAuth) authentication.getPrincipal();
-//        User user = userRepository.findById(userPrincipal.getId()).get();
-//        return ResponseEntity.ok(user);
-//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUser(@PathVariable Long id) {
-        User user = userRepository.findById(id).get();
-        return ResponseEntity.ok(user);
+        try {
+            return ResponseEntity.ok(userService.getUser(id));
+        } catch (NoSuchUserException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse(e.getMessage()));
+        }
     }
 
     @GetMapping("/all")
@@ -59,67 +59,59 @@ public class UserController {
 
     @GetMapping("/{id}/tests/passed")
     public ResponseEntity<?> getAllPassedTests(@PathVariable Long id) {
-        User user = userRepository.findById(id).get();
-        Set<Result> passedResults = resultRepository.findAllByUser(user);
-        Set<ResultDTO> results = new HashSet<>();
-        passedResults.forEach(result -> results.add(
-                ResultDTO.builder()
-                        .title(result.getTest().getTitle())
-                        .subject(String.valueOf(result.getTest().getSubject()))
-                        .difficulty(String.valueOf(result.getTest().getDifficulty()))
-                        .score(result.getScore().intValue())
-                        .passTimestamp(new SimpleDateFormat("MM/dd/yyyy HH:mm").format(result.getPassTimestamp()))
-                        .build()
-        ));
-        return ResponseEntity.ok(results);
+        try {
+            return ResponseEntity.ok(testService.getAllPassedTests(id));
+        } catch (NoSuchUserException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse(e.getMessage()));
+        }
     }
+
 
     @GetMapping("/{id}/tests/available")
     public ResponseEntity<?> getAllAvailableTests(@PathVariable Long id) {
-        User user = userRepository.findById(id).get();
-        List<Test> allTests = testRepository.findAll();
-        Set<Test> passedTests = new HashSet<>();
-        resultRepository.findAllByUser(user).forEach(res -> passedTests.add(res.getTest()));
-        Set<Test> requiredTests = new HashSet<>();
-        requiredTestRepository.findAllByUser(user).forEach(req -> requiredTests.add(req.getTest()));
-        allTests.removeAll(requiredTests);
-        allTests.removeAll(passedTests);
-        return ResponseEntity.ok(allTests);
+        try {
+            return ResponseEntity.ok(userService.getAvailableTests(id));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse(e.getMessage()));
+        }
     }
 
     @GetMapping("/{id}/tests/required")
     public ResponseEntity<?> getAllRequiredTests(@PathVariable Long id) {
-        User user = userRepository.findById(id).get();
-        Set<RequiredTest> requiredTests = requiredTestRepository.findAllByUser(user);
-        Set<Test> tests = new HashSet<>();
-        requiredTests.forEach(testReq -> tests.add(testReq.getTest()));
-        return ResponseEntity.ok(tests);
+        try {
+            return ResponseEntity.ok(userService.getAllRequiredTests(id));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse(e.getMessage()));
+        }
     }
 
     @PostMapping("/{id}/test")
     public ResponseEntity<?> passTest(@PathVariable Long id, @RequestBody AddTestRequest req) {
-        User user = userRepository.findById(id).get();
-        Test test = testRepository.findById(req.getTestId()).get();
-        RequiredTest requiredTest = requiredTestRepository.findByUserAndTest(user, test).get();
-        requiredTestRepository.delete(requiredTest);
-        Result result = Result.builder()
-                .test(test)
-                .user(user)
-                .score(30.0)
-                .passTimestamp(new Timestamp(System.currentTimeMillis()))
-                .build();
-        resultRepository.save(result);
-        return ResponseEntity.ok(result);
+        try {
+            resultService.passTest(id, req.getTestId());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse(e.getMessage()));
+        }
     }
 
     @GetMapping("/{id}/takeTest/{testId}")
-    public ResponseEntity<?> getTest(@PathVariable Long id, @PathVariable Long testId) {
-        Test test = testRepository.findById(testId).get();
-        Set<Question> questions = questionRepository.findAllByTest(test);
-        return ResponseEntity.ok(TakeTestDTO.builder()
-                .test(test)
-                .questions(questions)
-                .build());
+    public ResponseEntity<?> getTest(@PathVariable Long testId) {
+        try {
+            return ResponseEntity.ok(testService.getTestWithQuestions(testId));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse(e.getMessage()));
+        }
     }
 
 }

@@ -1,13 +1,18 @@
 package me.project.SpringProject.service;
 
 import lombok.extern.slf4j.Slf4j;
+import me.project.SpringProject.entity.RequiredTest;
 import me.project.SpringProject.entity.Result;
 import me.project.SpringProject.entity.Test;
 import me.project.SpringProject.entity.User;
+import me.project.SpringProject.exception.NoSuchTestException;
+import me.project.SpringProject.exception.NoSuchUserException;
+import me.project.SpringProject.repository.RequiredTestRepository;
 import me.project.SpringProject.repository.ResultRepository;
 import me.project.SpringProject.repository.TestRepository;
 import me.project.SpringProject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -29,11 +34,13 @@ public class ResultService {
     private UserRepository userRepository;
 
     @Autowired
+    private RequiredTestRepository requiredTestRepository;
+
+    @Autowired
     ResultService(ResultRepository resultRepository) {
         this.resultRepository = resultRepository;
     }
 
-    // could be required test
     public Optional<Result> addResult(Long userId, Long testId, Double score) {
         requiredTestService.removeFromRequiredTest(userId, testId);
         Test test = testRepository.findById(testId).get();
@@ -44,6 +51,20 @@ public class ResultService {
                 .user(user)
                 .score(score)
                 .build()));
+    }
+
+    public void passTest(Long id, Long testId){
+        User user = userRepository.findById(id).orElseThrow(NoSuchUserException::new);
+        Test test = testRepository.findById(testId).orElseThrow(NoSuchTestException::new);
+        RequiredTest requiredTest = requiredTestRepository.findByUserAndTest(user, test).get();
+        requiredTestRepository.delete(requiredTest);
+        Result result = Result.builder()
+                .test(test)
+                .user(user)
+                .score(30.0)
+                .passTimestamp(new Timestamp(System.currentTimeMillis()))
+                .build();
+        resultRepository.save(result);
     }
 
 }

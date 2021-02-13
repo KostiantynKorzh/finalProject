@@ -1,4 +1,4 @@
-package me.project.SpringProject.controller;
+package me.project.SpringProject.lang;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;

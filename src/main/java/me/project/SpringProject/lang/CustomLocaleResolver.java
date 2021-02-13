@@ -1,4 +1,4 @@
-package me.project.SpringProject.controller;
+package me.project.SpringProject.lang;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

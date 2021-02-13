@@ -43,7 +43,7 @@ public class TestController {
     }
 
     @GetMapping("/sorted")
-    public ResponseEntity<?> sortedUsers(@RequestParam(required = false) String param,
+    public ResponseEntity<?> sortedTests(@RequestParam(required = false) String param,
                                          @RequestParam(required = false) Integer page) {
         Page<Test> tests = testService.getAllSorted(param, page);
         return ResponseEntity.ok(tests);

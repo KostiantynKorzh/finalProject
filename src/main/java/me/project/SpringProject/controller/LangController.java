@@ -1,6 +1,5 @@
 package me.project.SpringProject.controller;
 
-import me.project.SpringProject.lang.BoardUserResponse;
 import me.project.SpringProject.service.LangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

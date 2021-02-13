@@ -1,8 +1,7 @@
 package me.project.SpringProject.service;
 
 import lombok.extern.slf4j.Slf4j;
-import me.project.SpringProject.controller.Translator;
-import me.project.SpringProject.lang.HeaderLangResponse;
+import me.project.SpringProject.lang.Translator;
 import me.project.SpringProject.dto.LangDTO;
 import org.springframework.stereotype.Service;
 

@@ -14,19 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/results")
 public class ResultController {
 
-    ResultRepository resultRepository;
-
     @Autowired
     ResultService resultService;
 
-    @Autowired
-    public ResultController(ResultRepository resultRepository) {
-        this.resultRepository = resultRepository;
-    }
-
     @PostMapping("/addResult")
     public ResponseEntity<?> postResult(@RequestBody AddResultRequest req) {
-        System.out.println(req);
         return ResponseEntity.of(resultService.addResult(req.getUserId(),
                 req.getTestId(),
                 req.getScore()));
