@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import Header from "./Header";
 import {Button, Jumbotron, Form} from "react-bootstrap";
 import AdminService from "../services/admin.service";
+import {useSelector} from "react-redux";
+import {CheckIfAdmin} from "../utils/roleCheck";
 
 const EditUser = (props) => {
 
@@ -11,12 +13,19 @@ const EditUser = (props) => {
     const [firstNameError, setFirstNameError] = useState("");
     const [lastNameError, setLastNameError] = useState("");
 
+    const {user: currentUser} = useSelector((state) => state.auth);
+
     const [user, setUser] = useState({
         firstName: "",
         lastName: ""
     });
 
     useEffect(() => {
+        CheckIfAdmin({
+            user: currentUser,
+            history: props.history
+        });
+
         getUser();
     }, []);
 

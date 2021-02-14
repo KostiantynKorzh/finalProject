@@ -2,7 +2,8 @@ import React, {useEffect, useState} from "react";
 import Header from "../Header";
 import {Pagination, Dropdown, Jumbotron, Table} from "react-bootstrap";
 import TestService from "../../services/test.service";
-import Test from "../Test";
+import {CheckIfAdmin} from "../../utils/roleCheck";
+import {useSelector} from "react-redux";
 
 const AdminTests = (props) => {
 
@@ -17,7 +18,15 @@ const AdminTests = (props) => {
 
     const [pages, setPages] = useState([]);
 
+    const {user: currentUser} = useSelector((state) => state.auth);
+
     useEffect(() => {
+
+        CheckIfAdmin({
+            user: currentUser,
+            history: props.history
+        });
+
         getTestsSorted(param, currentPage);
         for (let i = 0; i < sizePage; i++) {
             setPages(prevState => [...prevState, <Pagination.Item>

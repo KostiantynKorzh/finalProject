@@ -30,10 +30,6 @@ const Test = (props) => {
         duration: -1
     });
 
-    // const receiveResult = (value) => {
-    //     console.log(value);
-    // }
-
     const handleChangeInCard = (questionId, e, correctAnswer) => {
         const ansObj = {
             questionId: questionId,
@@ -55,7 +51,6 @@ const Test = (props) => {
 
     useEffect(() => {
         if (submitted) {
-            console.log(percentage);
             if (percentage <= -20) {
                 percentage = 0;
             }
@@ -77,7 +72,7 @@ const Test = (props) => {
         });
 
         setCompleted(true);
-        percentage = scoreTemp / results.length * 100;
+        percentage = scoreTemp / test.questions.length * 100;
         setScore(percentage);
     }
 

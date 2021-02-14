@@ -1,6 +1,6 @@
 import React from "react";
 import {Button} from "react-bootstrap";
-import getError from "../../services/error.service";
+import getError from "../services/error.service";
 
 const Error = () => {
 

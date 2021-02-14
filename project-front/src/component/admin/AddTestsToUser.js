@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import AdminService from "../../services/admin.service";
 import {Jumbotron, Button, Table} from "react-bootstrap";
 import Header from "../Header";
+import {CheckIfAdmin} from "../../utils/roleCheck";
+import {useSelector} from "react-redux";
 
 const AddTestsToUser = (props) => {
 
@@ -9,7 +11,15 @@ const AddTestsToUser = (props) => {
 
     const [added, setAdded] = useState(false);
 
+    const {user: currentUser} = useSelector((state) => state.auth);
+
     useEffect(() => {
+
+        CheckIfAdmin({
+            user: currentUser,
+            history: props.history
+        });
+
         getTests();
     }, []);
 
